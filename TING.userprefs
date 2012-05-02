@@ -1,0 +1,18 @@
+﻿<Properties>
+  <AuthorInfo Name="Jan Bæch" Email="jab@glostrupbib.dk" Copyright="" Company="Glostrup Bibliotek" Trademark="" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="TING\OpenSearch.cs">
+    <Files>
+      <File FileName="TING\OpenSearch.cs" Line="726" Column="60" />
+      <File FileName="Testing\Main.cs" Line="137" Column="1" />
+      <File FileName="GTK_test\MainWindow.cs" Line="1" Column="1" />
+      <File FileName="GTK_test\Main.cs" Line="1" Column="1" />
+      <File FileName="SimpleView_test\Main.cs" Line="14" Column="48" />
+      <File FileName="facet_test\Main.cs" Line="24" Column="5" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
