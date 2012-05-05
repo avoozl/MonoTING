@@ -3,61 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TING", "TING\TING.csproj", "{8C133EAC-4CD6-4D8D-9488-7648B0D15297}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{0877983A-E174-4BC9-B8A6-34BEEA6F7A1A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing_xmlReturn", "Testing_xmlReturn\Testing_xmlReturn.csproj", "{B434ABC4-2706-4D29-B732-185E61E90211}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testing2", "testing2\testing2.csproj", "{9FEA79C6-DBE6-4A2D-B9A4-CB98A69C434F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StressTest", "StressTest\StressTest.csproj", "{24F496DB-15B5-4E3C-B215-2BCBA86DECE0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTK_test", "GTK_test\GTK_test.csproj", "{12D63475-D355-499D-8C52-741CBD523D0D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleView_test", "SimpleView_test\SimpleView_test.csproj", "{2C62F203-81A6-4F32-A2C6-50AA96BE6EFA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "facet_test", "facet_test\facet_test.csproj", "{08FD5C79-7B74-45F1-8A58-9A1866C57E62}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0877983A-E174-4BC9-B8A6-34BEEA6F7A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0877983A-E174-4BC9-B8A6-34BEEA6F7A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0877983A-E174-4BC9-B8A6-34BEEA6F7A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0877983A-E174-4BC9-B8A6-34BEEA6F7A1A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08FD5C79-7B74-45F1-8A58-9A1866C57E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08FD5C79-7B74-45F1-8A58-9A1866C57E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08FD5C79-7B74-45F1-8A58-9A1866C57E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08FD5C79-7B74-45F1-8A58-9A1866C57E62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12D63475-D355-499D-8C52-741CBD523D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12D63475-D355-499D-8C52-741CBD523D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12D63475-D355-499D-8C52-741CBD523D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12D63475-D355-499D-8C52-741CBD523D0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24F496DB-15B5-4E3C-B215-2BCBA86DECE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24F496DB-15B5-4E3C-B215-2BCBA86DECE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24F496DB-15B5-4E3C-B215-2BCBA86DECE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24F496DB-15B5-4E3C-B215-2BCBA86DECE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C62F203-81A6-4F32-A2C6-50AA96BE6EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C62F203-81A6-4F32-A2C6-50AA96BE6EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C62F203-81A6-4F32-A2C6-50AA96BE6EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C62F203-81A6-4F32-A2C6-50AA96BE6EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9FEA79C6-DBE6-4A2D-B9A4-CB98A69C434F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FEA79C6-DBE6-4A2D-B9A4-CB98A69C434F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9FEA79C6-DBE6-4A2D-B9A4-CB98A69C434F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9FEA79C6-DBE6-4A2D-B9A4-CB98A69C434F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B434ABC4-2706-4D29-B732-185E61E90211}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B434ABC4-2706-4D29-B732-185E61E90211}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B434ABC4-2706-4D29-B732-185E61E90211}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B434ABC4-2706-4D29-B732-185E61E90211}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = facet_test\facet_test.csproj
+		StartupItem = TING\TING.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
