@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using System.Text;
 
 namespace TING.OpenSearch
 {
@@ -27,26 +28,34 @@ namespace TING.OpenSearch
 		public List<result_class_cell> dc_rights   			{get; set;}
 		public List<result_class_cell> dc_coverage   		{get; set;}
 	}	
-	
 	public class result_class_cell
 	{
 		public string element_content;
 		public string xsi_type;
 		public string element_name;
 	}
-	
 	public class facet_class
 	{
 		public string facetName;
 		public List<string> frequenceAndTerm;
 	}
 	
+	
+	
+	//Profile system for produce simpler classes
+	public class ResultProfile
+	{
+		
+	}
+	
+	
+	
 	public class OpenSearch
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OpenSearch._OpenSearch"/> class.
 		/// </summary>
-		public OpenSearch()
+		public OpenSearch ()
 		{
 		}
 		
@@ -65,6 +74,16 @@ namespace TING.OpenSearch
 		public enum sort_types 
 		{
 			date_ascending, date_descending, creator_ascending, creator_descending, random 
+		}
+		
+		public enum rank_types
+		{
+			rank_general, rank_title, rank_creator, none
+		}
+		
+		public enum relationData_types
+		{
+			type, uri,full,none
 		}
 		
 		//Return result from main web service call
@@ -739,17 +758,80 @@ namespace TING.OpenSearch
 		}
 		
 		
-		public void search (string q = "mad", int _start= 1, int _stepValue = 10, sort_types _sort = sort_types.date_descending)
+		public void search (
+							string _targetLibrary = @"http://opensearch.addi.dk/2.2/", 
+		                    string actionType = "search", 
+		                    string q = "mad", 
+		                    int _start= 1, 
+		                    int _stepValue = 10, 
+							rank_types _rank = rank_types.none,
+		                    sort_types _sort = sort_types.date_descending, 
+		                    string _outputType = "xml",
+							bool _allRelations = false,
+							relationData_types _relationData = relationData_types.none,
+							string _facetNames = "",
+							int _numberOfTerms = 0
+						   )
 		{
-			try 
-			{
-				result = XDocument.Load(@"http://opensearch.addi.dk/2.2/?action=search&query="
-				                        + q.ToString() 
-				                        + "&start="     + _start.ToString() 
-				                        + "&stepValue=" + _stepValue.ToString()
-				                        + "&sort="      + _sort.ToString() 
-				                        + "&outputType=xml"
-				                        );		
+			try {
+				
+				//String to hold the REST query
+				StringBuilder buildQuery = new StringBuilder ();
+				
+				//URl for the current Library
+				buildQuery.Append (_targetLibrary.ToString ());
+				
+				//Add "?" for begin command
+				buildQuery.Append ("?");
+				
+				//Add "action="
+				buildQuery.Append ("action=");
+				
+				//Add action type : current "search" and "getObject"
+				buildQuery.Append (actionType.ToString ());
+				
+				//Add query parameter
+				buildQuery.Append ("&query=" + q.ToString ());
+				
+				//Add start parameter
+				buildQuery.Append ("&start=" + _start.ToString ());
+				
+				//Add stepValue parameter
+				buildQuery.Append ("&stepValue=" + _stepValue.ToString ());
+				
+				//Add rank type (if any)
+				if (_rank != rank_types.none)
+					buildQuery.Append ("&rank=" + _rank.ToString ());
+				
+				//Add sort parameter
+				buildQuery.Append ("&sort=" + _sort.ToString ());
+				
+				//Add outputType parameter
+				buildQuery.Append ("&outputType=" + _outputType.ToString ());
+				
+				//Add allRelations parameter
+				buildQuery.Append ("&allRelations=" + _allRelations);
+				
+				//Add relationData parameter
+				if (_relationData != relationData_types.none)
+					buildQuery.Append ("&relationData=" + _relationData.ToString ());
+				
+				//Add facets parameters
+				if (_facetNames != "") 
+				{
+					foreach (string s in _facetNames.Split(':'))
+					{
+						buildQuery.Append ("&facetName=" + s);	
+					}
+					
+					buildQuery.Append ("&numberOfTerms=" + _numberOfTerms.ToString ());
+				};
+				
+				
+				//Get result from web service source
+				result = XDocument.Load(buildQuery.ToString());	
+				
+				
 			} 
 			catch (Exception ex) 
 			{
