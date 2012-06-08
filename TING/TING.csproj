@@ -36,10 +36,18 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyClass.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="OpenSearch.cs" />
-    <Compile Include="Alma.cs" />
+    <Compile Include="OpenSearch\OpenSearch.cs" />
+    <Compile Include="Alma\Alma.cs" />
+    <Compile Include="Alma\AlmaMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="OpenSearch\" />
+    <Folder Include="Alma\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Alma\AlmaMessage.doc" />
+    <None Include="Alma\AlmaMessage.xsd" />
+  </ItemGroup>
 </Project>
