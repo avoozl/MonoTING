@@ -24,89 +24,64 @@ namespace LINQAndTuplesTest
 			bool _more;
 			float _time;
 
-			Console.WriteLine ("--- Begin");
-
-			XElement xe_raw = XElement.Load (@"http://opensearch.addi.dk/next_2.2/?action=search&query=hansen&start=1&stepValue=50&outputType=xml&profile=test&agency=100200");
+			XElement xe_raw = XElement.Load (@"http://opensearch.addi.dk/2.2/?action=search&query=mad&start=1&stepValue=10&sort=date_descending&outputType=xml&allRelations=False&facetName=facet.type&numberOfTerms=10");
 
 			_hitCount = int.Parse (xe_raw.Element (XN_default + "result").Element (XN_default + "hitCount").Value);
 			_collectionCount = int.Parse (xe_raw.Element (XN_default + "result").Element (XN_default + "collectionCount").Value);
 			_more = bool.Parse (xe_raw.Element (XN_default + "result").Element (XN_default + "more").Value);
 			_time = float.Parse (xe_raw.Element (XN_default + "result").Element (XN_default + "time").Value);
-			//Console.WriteLine ("hitCount: " + _hitCount);
-			//Console.WriteLine ("collectionCount: " + _collectionCount);
-			//Console.WriteLine ("more: " + _more);
-			//Console.WriteLine ("time: " + _time.ToString ());
 
+			foreach(XElement xe_facet in xe_raw.Element (XN_default + "result").Element (XN_default + "facetResult").Elements())
+			{
+				string _facetName = xe_facet.Element(XN_default + "facetName").Value;
 
+				foreach(XElement xe_facetTerm in xe_facet.Elements(XN_default + "facetTerm"))
+				{
+					int _i1 = 0;
+					string _i2 = xe_facetTerm.Element(XN_default + "frequence").Value;
+					string _i3 = xe_facetTerm.Element(XN_default + "term").Value;
+					string _i4 = null;
+					string _i5 = null;
+					string _i6 = null;
+					string _i7 = _facetName;
+
+					var aTuple = Tuple.Create(_i1,_i2,_i3,_i4,_i5,_i6,_i7);
+
+					_list.Add(aTuple);
+
+				}
+			};
 
 			foreach (XElement xe_temp in xe_raw.Element(XN_default + "result").Elements(XN_default + "searchResult").Elements())
 			{
-				Console.WriteLine("---- Begin collection elements");
-
 				int _resultPosition = int.Parse( xe_temp.Element(XN_default +  "resultPosition").Value);
-				//Console.WriteLine("resultPosition:" + _resultPosition);
 
 				string _identifier = xe_temp.Element(XN_default + "object").Element(XN_default + "identifier").Value;
 				string _formatsAvailable = xe_temp.Element(XN_default + "object").Element(XN_default + "formatsAvailable").Element(XN_default + "format").Value;
 
-				//Console.WriteLine("identifier:" + _identifier);
-				//Console.WriteLine("formatsAvailable:" + _formatsAvailable);
-
-				Console.WriteLine("---- Tuples begin");
-
 				foreach(XElement xe_temp2 in xe_temp.Element(XN_default + "object").Element(XN_dkabm + "record").Elements())
 				{
-					//Item1 : The  _resultPosition value
-					//Item2 : The element namespace
-					//Item3 : The element localname
-					//Item4 : The element value
-					//Item5 : The attribute value (xsi:type) if any
-					//Item6 : null - reserved
-					//Item7 : null - reserved
+					int    _Item1 = _resultPosition;              //Item1 : The  _resultPosition value
+					string _Item2 = xe_temp2.Name.NamespaceName;  //Item2 : The element namespace
+					string _Item3 = xe_temp2.Name.LocalName;      //Item3 : The element localname
+					string _Item4 = xe_temp2.Value;               //Item4 : The element value
 
-
-					//Console.WriteLine("dkabm record element begin");
-
-
-					int    _Item1 = _resultPosition;
-					Console.WriteLine("Item1: " + _Item1);
-
-					string _Item2 = xe_temp2.Name.NamespaceName;
-					Console.WriteLine("Item2:" + _Item2);
-
-					string _Item3 = xe_temp2.Name.LocalName;
-					Console.WriteLine("Item3:" + _Item3);
-
-					string _Item4 = xe_temp2.Value;
-					Console.WriteLine("Item4:" + _Item4);
-
-					string _Item5 = null;
+					string _Item5 = null;                         //Item5 : The attribute value (xsi:type) if any
 					if(xe_temp2.HasAttributes)
 					{
 						_Item5 = xe_temp2.FirstAttribute.Value;
 					}
-					Console.WriteLine("Item5:" + _Item5);
 
-					string _Item6 = null;
-					string _Item7 = null;
+					string _Item6 = null;                         //Item6 : null - reserved
+					string _Item7 = null;                         //Item7 : null - reserved
 
+					var aTuple = Tuple.Create(_Item1,_Item2,_Item3,_Item4,_Item5,_Item6,_Item7);
 
-					//Console.WriteLine("dkabm record element end");
+					_list.Add(aTuple);
 
-
-
-					//var tuple7 = Tuple.Create("Jane", 90, 87, 93, 67, 100, 92);
-
+					//Console.WriteLine(_Item1 + " " + _Item2 + " " + _Item3 + " " + _Item4 + " " + _Item5);
 				}
-				
-
-				Console.WriteLine("---- Tuples end");
-
-
-
 			}
-
-
 			Console.WriteLine("---- End");
 			Console.ReadLine();
 		}

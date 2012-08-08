@@ -12,14 +12,24 @@ namespace TING_test_console_app
 	{
 		public static void Main (string[] args)
 		{
-			OpenSearch os = new OpenSearch ();
-			
-			os.search ();
-			
-			Console.WriteLine (os.result.ToString ());
-			Console.WriteLine ();
-			
-			Console.ReadLine ();
+			OpenSearchTuples ost = new OpenSearchTuples ();
+
+			string s = ost.buildSearch (_facetNames: "facet.type", _numberOfTerms: 10, _stepValue: 1);
+
+
+			Console.WriteLine (s);
+
+			ost.search (s);
+
+			foreach (var t in ost._list) 
+			{
+				Console.WriteLine (t.Item2);
+			}
+
+			Console.WriteLine();
+			Console.ReadLine();
+
+
 		}
 	}
 }

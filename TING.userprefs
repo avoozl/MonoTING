@@ -1,9 +1,9 @@
 ﻿<Properties GitUserInfo="UsingMD">
   <AuthorInfo Name="Jan Bæch" Email="jab@glostrupbib.dk" Copyright="" Company="Glostrup Bibliotek" Trademark="" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TING\OpenSearch.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TING_OpenSearch_tuples\OpenSearch_tuples.cs">
     <Files>
-      <File FileName="TING\OpenSearch.cs" Line="726" Column="36" />
+      <File FileName="TING_OpenSearch_tuples\OpenSearch_tuples.cs" Line="29" Column="122" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

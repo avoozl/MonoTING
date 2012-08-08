@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TING", "TING\TING.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TING_test_console_app", "TING_test_console_app\TING_test_console_app.csproj", "{4A7A4DC5-30DD-468B-8830-3C7058788829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TING_OpenSearch_tuples", "TING_OpenSearch_tuples\TING_OpenSearch_tuples.csproj", "{E1BB6B3E-7B8D-4E68-86B9-1880C45B849B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TING_test_tuples", "TING_test_tuples\TING_test_tuples.csproj", "{68449A6C-D50D-4ECB-9F41-D7F0788104BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,17 +17,17 @@ Global
 		{4A7A4DC5-30DD-468B-8830-3C7058788829}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A7A4DC5-30DD-468B-8830-3C7058788829}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A7A4DC5-30DD-468B-8830-3C7058788829}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68449A6C-D50D-4ECB-9F41-D7F0788104BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68449A6C-D50D-4ECB-9F41-D7F0788104BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68449A6C-D50D-4ECB-9F41-D7F0788104BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68449A6C-D50D-4ECB-9F41-D7F0788104BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C133EAC-4CD6-4D8D-9488-7648B0D15297}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E1BB6B3E-7B8D-4E68-86B9-1880C45B849B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1BB6B3E-7B8D-4E68-86B9-1880C45B849B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1BB6B3E-7B8D-4E68-86B9-1880C45B849B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1BB6B3E-7B8D-4E68-86B9-1880C45B849B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = TING_OpenSearch_tuples\TING_OpenSearch_tuples.csproj
+		StartupItem = TING_test_console_app\TING_test_console_app.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

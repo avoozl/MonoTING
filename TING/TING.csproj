@@ -40,12 +40,13 @@
     <Compile Include="OpenSearch\OpenSearch.cs" />
     <Compile Include="Alma\Alma.cs" />
     <Compile Include="Alma\AlmaMessage.cs" />
+    <Compile Include="OpenSearchTuples\OpenSearchTuples.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="OpenSearch\" />
     <Folder Include="Alma\" />
-    <Folder Include="Unstable\" />
+    <Folder Include="OpenSearchTuples\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Alma\AlmaMessage.doc" />

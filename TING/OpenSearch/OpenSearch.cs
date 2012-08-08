@@ -48,8 +48,7 @@ namespace TING.OpenSearch
 		
 	}
 	
-	
-	
+
 	public class OpenSearch
 	{
 		/// <summary>
