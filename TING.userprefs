@@ -1,13 +1,9 @@
 ﻿<Properties GitUserInfo="UsingMD">
   <AuthorInfo Name="Jan Bæch" Email="jab@glostrupbib.dk" Copyright="" Company="Glostrup Bibliotek" Trademark="" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="TING/OpenSearch/OpenSearch.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TING\OpenSearch.cs">
     <Files>
-      <File FileName="TING/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="TING/OpenSearch/OpenSearch.cs" Line="762" Column="64" />
-      <File FileName="TING/Alma/AlmaMessage.cs" Line="14" Column="21" />
-      <File FileName="TING/Alma/Alma.cs" Line="10" Column="4" />
-      <File FileName="TING_test_console_app/Main.cs" Line="1" Column="1" />
+      <File FileName="TING\OpenSearch.cs" Line="726" Column="36" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
