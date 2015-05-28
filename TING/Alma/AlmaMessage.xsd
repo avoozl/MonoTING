@@ -1,0 +1,4089 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Simon Dunlavey (Axiell Library Group) -->
+<!-- 20091028 sjd: new composite version containing all ALMA messages -->
+<!-- 20091028 sjd: added optional 'linkText' attribute to 'externalUrl' element (JIRA ARENA-2921) -->
+<!-- 20091101 sjd: reinstated 'coverUrl' element to 'exportCatalogueRecord' element - it had been inadvertently omitted -->
+<!-- 20091103 sjd: allow responses to be empty, i.e. status information only, otherwise there is no way of -->
+<!--                      returning just an error -->
+<!-- 20091104 sjd: (1) getCatalogueDetailResponse publicationYear attribute changed from type xs:short to xs:string -->
+<!--                      (2) 'notAvailable' added to the allowed values for type 'holdingStatusChoice' (JIRA ARENA-5346) -->
+<!-- 20091106 sjd: following added to the list for the 'key' attribute of 'reservationStatus' element (JIRA ARENA-5360) -->
+<!--                       'reservationAlreadyFilled' - title already reserved for patron and ready for collection -->
+<!--                       'reservationAlreadyReserved' - title already reserved for patron -->
+<!--                       'reservationInvalidExpireDate' - invalid expiry date -->
+<!--                       'reservationLoanOnCopy' - patron already has a copy of this title on loan -->
+<!--                       'reservationNoExpiry' - no expiry date specified -->
+<!--                       'reservationNoHolding' - no reservable copies in the branches to which patron has access -->
+<!--                       'reservationNoItemsAvailable' - no available items match the title -->
+<!--                       'reservationNoPeriodicalPermission' - patron not authorised to reserve periodicals -->
+<!--                       'reservationNoPermission' - patron not authorised to reserve, ask a member of staff -->
+<!--                       'reservationNotForLoan' - item not for loan -->
+<!--                       'reservationOnShelf ' - copy is available on shelf for loan -->
+<!--                       'reservationPatronBlocked' - patron card blocked -->
+<!--                       'reservationPatronMaxReservations' - patron has reached the max. no. of reservations -->
+<!--                       'reservationPatronUnderAged' - You are underage to reserve this title -->
+<!-- 20100114 sjd: V1.2.0 - (JIRA ARENA-5284) add 'version' attribute to schema, add 'getVersions' and -->
+<!--                       'getVersionsResponse'  -->
+<!-- 20100118 sjd: V1.2.1 - elements 'holdings' and 'compositeHoldings'  in element 'detailCatalogueRecord' made -->
+<!--                       optional, otherwise there is no way of returning a valid 'getCatalogueRecordDetailResponse' -->
+<!--                       message for a record with no holdings -->
+<!--                       (JIRA ARENA-5176) new media classes added - 'blueray', 'braille', 'dissertation', 'serial' -->
+<!-- 20100223 sjd: V1.2.2 - changes for Arena 1.6 (mostly) -->
+<!--                       (1) (JIRA ARENA-6326) support for LMS backend searching added: -->
+<!--                           (1.1) new messages 'runLmsSearch' and 'runLmsSearchResponse'  -->
+<!--                           (1.2) new type: 'lmsSearchTypeChoice' to restrict the choices for search type -->
+<!--                           (1.3) new status message: 'invalidSearch' -->
+<!--                       (2) (JIRA ARENA-6325) support for 'new' search added - new child element 'accessionDate' added to the 'index' and 'view' -->
+<!--                       elements of the 'exportCatalogueRecord' element and attribute of 'newTitle' added. These are used by the ALMA messages -->
+<!--                       'exportCatalogueRecordsResponse and 'updateCatalogueResponse' -->
+<!--                       (3) element 'nofDays' added to element 'getMessageServicesResponse.messageServices.messageService -->
+<!--                       (4) status message 'Unsupported method call:' changed to 'unsupportedMethodCall' -->
+<!--                       (5) status message 'loanNotFound' reinstated -->
+<!--                       (6) changed element 'orderId' to 'orderid' in getPaymentServiceInformationResponse' -->
+<!--                       (7) removed 'mixed=true' from element 'author' -->
+<!--                       (8) definitions for elements ‘code’, ‘name’ and ‘shortname’ changed to remove the ‘mixed = true’ attribute. -->
+<!-- 20100525 sjd: V1.2.3 - changes for Arena 1.5.4 -->
+<!--                       (1) (JIRA ARENA-6527, 6528) add  element 'recordControlNumber' to the 'view' element of 'exportCatalogueRecord' -->
+<!--                       (2) (JIRA ARENA-6607, 6608) add 'note' child element to the ''reservation' element -->
+<!--                       (3) (JIRA ARENA-6606) add 'note' child element to the 'loan' element -->
+<!--                       (4) (JIRA ARENA-6618, 6619) optional attribute 'reservationType' added to the 'reservation' element -->
+<!--                       (5) (JIRA ARENA-6635) optional attribute 'isDeletable' added to the 'reservation' element -->
+<!--                       (6) (JIRA ARENA-6633) list of allowed values for type 'debtTypeChoice' extended -->
+<!-- 20100603 sjd: V1.2.4 - additional changes for Arena 1.5.4 -->
+<!--                       (1) (JIRA ARENA-6661) add new attribute of 'availabilityInformation' to getAvailabilityResponse -->
+<!--                       (2) (JIRA ARENA-6662) list of allowed values for 'holdingStatusChoice' extended  -->
+<!-- 20100607 sjd: V1.2.5 - changes to provide support for Archives and Museums data -->
+<!--                       (1) optional attribute 'recordType' added to 'exportCatalogueRecord' and 'detailCatalogueRecord' -->
+<!--                       (2) new type 'recordTypeChoice' created -->
+<!--                       (3) add 'role' attribute to 'author' element -->
+<!--                       (4) add new element 'dateRanges' to elements 'exportCatalogueRecord' and 'detailCatalogueRecord' -->
+<!--                       (5) add new element 'copyright' to 'detailCatalogueRecord' element -->
+<!--                       (6) add new element 'provenance' to 'detailCatalogueRecord' element -->
+<!--                       (7) add new attribute 'alternateId' to elements 'exportCatalogueRecord' and 'detailCatalogueRecord' -->
+<!-- 20100607 wos: V1.2.6 - changes to provide support for Archives and Museums data -->
+<!--                       (1) Changed 'role' attribute of 'author' to enumeration -->
+<!-- 20100705 sjd: V1.2.7 - changes to include Indexing Council recommendations and to provide support for Archives and Museums data -->
+<!--                       (1) (JIRA ARENA-6956) choice between 'author' and 'authors' elements in 'exportCatalogueRecord.view' element -->
+<!--                       (2) 'dateRanges' element replaced by separate 'eventDates' and 'objectDates' elements -->
+<!--                       (3) (JIRA ARENA-6958) optional element 'responsibility' added to 'index' and 'view' elements of 'exportCatalogueRecord' -->
+<!--                       (4) (JIRA ARENA-6959) optional 'type' attribute added to 'number' element -->
+<!--                       (5) (JIRA ARENA-6959) new type 'controlNumberType' created -->
+<!--                       (6) (JIRA ARENA-6957) choice between 'seriesTitles' and 'titleSeries' in exportCatalogueRecord 'facet', 'index' and 'view' elements -->
+<!--                       (7) (JIRA ARENA-6960) optional elements 'sortAuthor', 'sortPublicationYear' and 'sortTitle' added to 'exportCatalogueRecord.index' element -->
+<!--                       (8) (JIRA ARENA-6908) new values added to the 'messageServiceType' and 'messageSendMethod' types -->
+<!-- 20101014 sjd: V1.2.8 - changes for Arena 2.0.0 -->
+<!--                       (1) (JIRA AR-72) new message 'getPatronAlternativeCards' implemented -->
+<!--                       (2) (JIRA AR-83) new attributes 'showCountry' and 'showArea' added to element 'phoneNumber' -->
+<!--                       (3) added 'unknown' to list of valid values for 'controlNumberType'  -->
+<!--                       (4) default value for 'type' attribute of element 'number' is now 'unknown' -->
+<!--                       (5) (JIRA ARENA-6352) optional attribute 'remainingRenewals' added to element 'loan' -->
+<!--                       (6) Optional element 'publisher' added to element 'detailCatalogueRecord (Indexing Council recommendation) -->
+<!--                       (7) Optional element 'notes' added to the 'view' element of exportCatalogueRecord (Indexing Council recommendation) -->
+<!--                       (8) Removed elements 'eventDates' and 'objectDates' from element 'facet'. They should never have been there in the first place -->
+<!-- 20101029 sjd: V1.2.9 - changes for Arena 2.0.0 -->
+<!--                       (1) (JIRA AR-406) new message 'changeBorrCardPin' implemented -->
+<!-- DDElibra extensions begin -->
+<xs:schema targetNamespace="http://www.axiell.com/Schema/alma/v1.0" xmlns="http://www.axiell.com/Schema/alma/v1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="1.2.8">
+<!-- DDElibra extensions end -->
+	<xs:element name="AlmaMessage">
+		<xs:annotation>
+			<xs:documentation>ALMA message root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="addAddress"/>
+				<xs:element ref="addAddressResponse"/>
+				<xs:element ref="addEmailAddress"/>
+				<xs:element ref="addEmailAddressResponse"/>
+				<xs:element ref="addMessageService"/>
+				<xs:element ref="addMessageServiceResponse"/>
+				<xs:element ref="addPayment"/>
+				<xs:element ref="addPaymentResponse"/>
+				<xs:element ref="addPhoneNumber"/>
+				<xs:element ref="addPhoneNumberResponse"/>
+				<xs:element ref="addReservation"/>
+				<xs:element ref="addReservationResponse"/>
+				<xs:element ref="changeAddress"/>
+				<xs:element ref="changeAddressResponse"/>
+				<xs:element ref="changeBorrCard"/>
+				<xs:element ref="changeBorrCardResponse"/>
+				<xs:element ref="changeBorrCardPin"/>
+				<xs:element ref="changeBorrCardPinResponse"/>
+				<xs:element ref="changeEmailAddress"/>
+				<xs:element ref="changeEmailAddressResponse"/>
+				<xs:element ref="changeMessageService"/>
+				<xs:element ref="changeMessageServiceResponse"/>
+				<xs:element ref="changePhoneNumber"/>
+				<xs:element ref="changePhoneNumberResponse"/>
+				<xs:element ref="changeReservation"/>
+				<xs:element ref="changeReservationResponse"/>
+				<xs:element ref="checkPatronStatus"/>
+				<xs:element ref="checkPatronStatusResponse"/>
+				<xs:element ref="exportCatalogueRecords"/>
+				<xs:element ref="exportCatalogueRecordsResponse"/>
+				<xs:element ref="getAddressTypes"/>
+				<xs:element ref="getAddressTypesResponse"/>
+				<xs:element ref="getAvailability"/>
+				<xs:element ref="getAvailabilityResponse"/>
+				<xs:element ref="getBranches"/>
+				<xs:element ref="getBranchesResponse"/>
+				<xs:element ref="getCatalogueRecordDetail"/>
+				<xs:element ref="getCatalogueRecordDetailResponse"/>
+				<xs:element ref="getCollections"/>
+				<xs:element ref="getCollectionsResponse"/>
+				<xs:element ref="getCountries"/>
+				<xs:element ref="getCountriesResponse"/>
+				<xs:element ref="getDebts"/>
+				<xs:element ref="getDebtsResponse"/>
+				<xs:element ref="getDepartments"/>
+				<xs:element ref="getDepartmentsResponse"/>
+				<xs:element ref="getLoans"/>
+				<xs:element ref="getLoansResponse"/>
+				<xs:element ref="getLocations"/>
+				<xs:element ref="getLocationsResponse"/>
+				<xs:element ref="getMediaTypes"/>
+				<xs:element ref="getMediaTypesResponse"/>
+				<xs:element ref="getMessages"/>
+				<xs:element ref="getMessagesResponse"/>
+				<xs:element ref="getMessageServices"/>
+				<xs:element ref="getMessageServicesResponse"/>
+				<xs:element ref="getOrganisations"/>
+				<xs:element ref="getOrganisationsResponse"/>
+				<xs:element ref="getOrganisationHierarchy"/>
+				<xs:element ref="getOrganisationHierarchyResponse"/>
+				<xs:element ref="getOverdueLoans"/>
+				<xs:element ref="getOverdueLoansResponse"/>
+				<xs:element ref="getPatronAlternativeCards"/>
+				<xs:element ref="getPatronAlternativeCardsResponse"/>
+				<xs:element ref="getPatronInformation"/>
+				<xs:element ref="getPatronInformationResponse"/>
+				<xs:element ref="getPayments"/>
+				<xs:element ref="getPaymentsResponse"/>
+				<xs:element ref="getPaymentConfirmation"/>
+				<xs:element ref="getPaymentConfirmationResponse"/>
+				<xs:element ref="getPaymentServiceInformation"/>
+				<xs:element ref="getPaymentServiceInformationResponse"/>
+				<xs:element ref="getReadyReservations"/>
+				<xs:element ref="getReadyReservationsResponse"/>
+				<xs:element ref="getReservations"/>
+				<xs:element ref="getReservationsResponse"/>
+				<xs:element ref="getReservationBranches"/>
+				<xs:element ref="getReservationBranchesResponse"/>
+				<xs:element ref="getReservationResponsibleBranches"/>
+				<xs:element ref="getReservationResponsibleBranchesResponse"/>
+				<xs:element ref="getSimilarCatalogueRecords"/>
+				<xs:element ref="getSimilarCatalogueRecordsResponse"/>
+				<xs:element ref="getSubLocations"/>
+				<xs:element ref="getSubLocationsResponse"/>
+				<xs:element ref="getVersions"/>
+				<xs:element ref="getVersionsResponse"/>
+				<xs:element ref="removeAddress"/>
+				<xs:element ref="removeAddressResponse"/>
+				<xs:element ref="removeEmailAddress"/>
+				<xs:element ref="removeEmailAddressResponse"/>
+				<xs:element ref="removeMessageService"/>
+				<xs:element ref="removeMessageServiceResponse"/>
+				<xs:element ref="removePhoneNumber"/>
+				<xs:element ref="removePhoneNumberResponse"/>
+				<xs:element ref="removeReservation"/>
+				<xs:element ref="removeReservationResponse"/>
+				<xs:element ref="renewLoan"/>
+				<xs:element ref="renewLoanResponse"/>
+				<xs:element ref="runLmsSearch"/>
+				<xs:element ref="runLmsSearchResponse"/>
+				<xs:element ref="updateCatalogue"/>
+				<xs:element ref="updateCatalogueResponse"/>
+				<!-- DDElibra extensions begin -->
+				<xs:element ref="addAbsentPeriod"/>
+				<xs:element ref="addAbsentPeriodResponse"/>
+				<xs:element ref="addFee"/>
+				<xs:element ref="addFeeResponse"/>
+				<xs:element ref="changeAbsentPeriod"/>
+				<xs:element ref="changeAbsentPeriodResponse"/>
+				<xs:element ref="changePatronPreferences"/>
+				<xs:element ref="changePatronPreferencesResponse"/>
+				<xs:element ref="changePinCode"/>
+				<xs:element ref="changePinCodeResponse"/>
+				<xs:element ref="getPatronInformationExtended"/>
+				<xs:element ref="getPatronInformationExtendedResponse"/>
+				<xs:element ref="removeAbsentPeriod"/>
+				<xs:element ref="removeAbsentPeriodResponse"/>
+				<!-- DDElibra extensions end -->
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of AlmaMessage -->
+	<xs:element name="addAddress">
+		<xs:annotation>
+			<xs:documentation>add new address to patron account</xs:documentation>
+			<xs:documentation>service url: alma/patron/addresses/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="type" use="required"/>
+			<xs:attribute name="careOf" use="optional"/>
+			<xs:attribute name="streetAddress" use="required"/>
+			<xs:attribute name="zipCode" use="required"/>
+			<xs:attribute name="city" use="required"/>
+			<xs:attribute name="country" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addAddress -->
+	<xs:element name="addAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="addresses" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addAddressResponse -->
+	<xs:element name="addEmailAddress">
+		<xs:annotation>
+			<xs:documentation>add new email address to patron account</xs:documentation>
+			<xs:documentation>service url: alma/patron/email/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="address" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addEmailAddress -->
+	<xs:element name="addEmailAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="emailAddresses" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addEmailAddressResponse-->
+	<xs:element name="addMessageService">
+		<xs:annotation>
+			<xs:documentation>add new message service to patron account</xs:documentation>
+			<xs:documentation>service url: alma/patron/messageServices/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="serviceType" type="messageServiceType" use="required"/>
+			<xs:attribute name="sendMethod" type="messageSendMethod" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="optional"/>
+			<xs:attribute name="nofDays" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addMessageService -->
+	<xs:element name="addMessageServiceResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="messageServices" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addMessageServiceResponse -->
+	<xs:element name="addPayment">
+		<xs:annotation>
+			<xs:documentation>add details of completed payment to LMS</xs:documentation>
+			<xs:documentation>service url: alma/patron/payments/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="transactionNumber" use="required"/>
+			<xs:attribute name="orderId" use="required"/>
+			<xs:attribute name="amount" use="required"/>
+			<xs:attribute name="debts" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addPayment -->
+	<xs:element name="addPaymentResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addPaymentResponse -->
+	<xs:element name="addPhoneNumber">
+		<xs:annotation>
+			<xs:documentation>add new phone number to patron account</xs:documentation>
+			<xs:documentation>service url: alma/patron/phoneNumbers/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="areaCode" use="required"/>
+			<xs:attribute name="country" use="required"/>
+			<xs:attribute name="localCode" use="required"/>
+			<xs:attribute name="useForSms" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addPhoneNumber -->
+	<xs:element name="addPhoneNumberResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="phoneNumbers" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addPhoneNumberResponse -->
+	<xs:element name="addReservation">
+		<xs:annotation>
+			<xs:documentation>add reservation to patron account</xs:documentation>
+			<xs:documentation>service url: alma/patron/reservations/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="reservable" use="required"/>
+			<xs:attribute name="source" type="reservationSource" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+			<xs:attribute name="reservationType" type="reservationTypeChoice" use="required"/>
+			<xs:attribute name="reservationBranch" use="required"/>
+			<xs:attribute name="reservationPickUpBranch" use="required"/>
+			<xs:attribute name="reservationValidFrom" use="required"/>
+			<xs:attribute name="reservationValidTo" use="required"/>
+			<xs:attribute name="reservationNote" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addReservation -->
+	<xs:element name="addReservationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="reservation" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addReservationResponse -->
+	<xs:element name="changeAddress">
+		<xs:annotation>
+			<xs:documentation>change patron address</xs:documentation>
+			<xs:documentation>service url: alma/patron/addresses/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="address" use="required"/>
+			<xs:attribute name="type" use="required"/>
+			<xs:attribute name="careOf" use="optional"/>
+			<xs:attribute name="streetAddress" use="required"/>
+			<xs:attribute name="zipCode" use="required"/>
+			<xs:attribute name="city" use="optional"/>
+			<xs:attribute name="country" use="optional"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeAddress -->
+	<xs:element name="changeAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="addresses" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeAddressResponse -->
+	<xs:element name="changeBorrCard">
+		<xs:annotation>
+			<xs:documentation>change borrower card for patron</xs:documentation>
+			<xs:documentation>service url: alma/patron/borrowerCards/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="borrCardChange" use="required"/>
+			<xs:attribute name="isValid" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeBorrCard -->
+	<xs:element name="changeBorrCardResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element name="borrCards" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of borrCard elements</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="borrCard" minOccurs="0"/>
+						</xs:sequence>
+						<xs:attribute name="isAddable" type="simpleOptionType" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeBorrCardResponse -->
+	<xs:element name="changeBorrCardPin">
+		<xs:annotation>
+			<xs:documentation>change borrower card PIN</xs:documentation>
+			<xs:documentation>service url: alma/patron/borrowerCards/pin/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="oldPinCode" use="required"/>
+			<xs:attribute name="newPinCode" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeBorrCardPin -->
+	<xs:element name="changeBorrCardPinResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeBorrCardPinResponse -->
+	<xs:element name="changeEmailAddress">
+		<xs:annotation>
+			<xs:documentation>change patron's email address</xs:documentation>
+			<xs:documentation>service url: alma/patron/email/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="emailAddress" use="required"/>
+			<xs:attribute name="address" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeEmailAddress -->
+	<xs:element name="changeEmailAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="emailAddresses" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeEmailAddressResponse -->
+	<xs:element name="changeMessageService">
+		<xs:annotation>
+			<xs:documentation>change message service on patron's account</xs:documentation>
+			<xs:documentation>service url: alma/patron/messageServices/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="serviceType" type="messageServiceType" use="required"/>
+			<xs:attribute name="sendMethod" type="messageSendMethod" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="optional"/>
+			<xs:attribute name="nofDays" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeMessage Service -->
+	<xs:element name="changeMessageServiceResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="messageServices" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeMessageServiceResponse -->
+	<xs:element name="changePhoneNumber">
+		<xs:annotation>
+			<xs:documentation>change patron's phone number</xs:documentation>
+			<xs:documentation>service url: alma/patron/phoneNumbers/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="phoneNumber" use="required"/>
+			<xs:attribute name="country" use="required"/>
+			<xs:attribute name="areaCode" use="required"/>
+			<xs:attribute name="localCode" use="required"/>
+			<xs:attribute name="useForSms" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!--end of changePhoneNumber -->
+	<xs:element name="changePhoneNumberResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="phoneNumbers" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changePhoneNumberResponse -->
+	<xs:element name="changeReservation">
+		<xs:annotation>
+			<xs:documentation>change reservation made by patron</xs:documentation>
+			<xs:documentation>service url: alma/patron/reservations/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+			<xs:attribute name="reservation" use="required"/>
+			<xs:attribute name="reservationPickUpBranch" use="required"/>
+			<xs:attribute name="reservationValidFrom" use="required"/>
+			<xs:attribute name="reservationValidTo" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeReservation -->
+	<xs:element name="changeReservationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="reservation" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of changeReservationResponse -->
+	<xs:element name="checkPatronStatus">
+		<xs:annotation>
+			<xs:documentation>check patron's status</xs:documentation>
+			<xs:documentation>service url: alma/patron/status</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of checkPatronStatus -->
+	<xs:element name="checkPatronStatusResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of checkPatronStatusResponse -->
+	<xs:element name="exportCatalogueRecords">
+		<xs:annotation>
+			<xs:documentation>request one or more catalogue records</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/export</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="nofRecords" use="required"/>
+			<xs:attribute name="startNo" use="required"/>
+			<xs:attribute name="catalogueRecordKey" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of exportCatalogueRecords -->
+	<xs:element name="exportCatalogueRecordsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="agency"/>
+				<xs:element ref="nofRecords"/>
+				<xs:element ref="nofRecordsTotal"/>
+				<xs:element ref="startNo"/>
+				<xs:element ref="stopNo"/>
+				<xs:element ref="exportCatalogueRecord" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of exportCatalogueRecordsResponse -->
+	<xs:element name="getAddressTypes">
+		<xs:annotation>
+			<xs:documentation>get LMS patron address types</xs:documentation>
+			<xs:documentation>service url: alma/patron/addressTypes</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getAddressTypes -->
+	<xs:element name="getAddressTypesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="addressTypes" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of addressType elements</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getAddressTypesResponse -->
+	<xs:element name="getAvailability">
+		<xs:annotation>
+			<xs:documentation>get availability status of items for a single title</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/availability</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="catalogueRecordKey" use="required"/>
+			<xs:attribute name="organisationId" use="optional"/>
+			<xs:attribute name="branchId" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getAvailability -->
+	<xs:element name="getAvailabilityResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="catalogueRecords" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getAvailabilityResponse -->
+	<xs:element name="getBranches">
+		<xs:annotation>
+			<xs:documentation>get list of branches for agency</xs:documentation>
+			<xs:documentation>service url: alma/organisation/branches</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getBranches -->
+	<xs:element name="getBranchesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="branches" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getBranchesResponse -->
+	<xs:element name="getCatalogueRecordDetail">
+		<xs:annotation>
+			<xs:documentation>get catalogue details for single record</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="catalogueRecordKey" use="required"/>
+			<xs:attribute name="organisationId" use="optional"/>
+			<xs:attribute name="branchId" use="optional"/>
+			<xs:attribute name="departmentId" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getCatalogueRecordDetail -->
+	<xs:element name="getCatalogueRecordDetailResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<!-- DDElibra extensions begin -->
+				<xs:choice>
+					<xs:element ref="detailCatalogueRecords" minOccurs="0"/>
+					<xs:element ref="detailCatalogueRecord" minOccurs="0"/>
+				</xs:choice>
+				<!-- DDElibra extensions end -->
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getCatalogueRecordDetailResponse -->
+	<xs:element name="getCollections">
+		<xs:annotation>
+			<xs:documentation>get LMS collection names</xs:documentation>
+			<xs:documentation>service url: alma/organisation/collections</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getCollections -->
+	<xs:element name="getCollectionsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="collections" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getCollectionsResponse -->
+	<xs:element name="getCountries">
+		<xs:annotation>
+			<xs:documentation>get LMS country names</xs:documentation>
+			<xs:documentation>service url: alma/patron/countries</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getCountries -->
+	<xs:element name="getCountriesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="countries" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getCountriesResponse -->
+	<xs:element name="getDebts">
+		<xs:annotation>
+			<xs:documentation>get patron's debts</xs:documentation>
+			<xs:documentation>service url: alma/patron/debts</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getDebts -->
+	<xs:element name="getDebtsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="debts" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getDebtsResponse -->
+	<xs:element name="getDepartments">
+		<xs:annotation>
+			<xs:documentation>get LMS department names</xs:documentation>
+			<xs:documentation>service url: alma/organisation/departments</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getDepartments -->
+	<xs:element name="getDepartmentsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="departments" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getDepartmentsResponse -->
+	<xs:element name="getLoans">
+		<xs:annotation>
+			<xs:documentation>get list of patron's loans</xs:documentation>
+			<xs:documentation>service url: alma/patron/loans</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getLoans -->
+	<xs:element name="getLoansResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="loans" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getLoansResponse -->
+	<xs:element name="getLocations">
+		<xs:annotation>
+			<xs:documentation>get LMS location names</xs:documentation>
+			<xs:documentation>service url: alma/organisation/locations</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getLocations -->
+	<xs:element name="getLocationsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="locations" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getLocationsResponse -->
+	<xs:element name="getMediaTypes">
+		<xs:annotation>
+			<xs:documentation>get LMS media type names</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/mediatypes</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getMediaTypes -->
+	<xs:element name="getMediaTypesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="mediaTypes" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getMediaTypesResponse -->
+	<xs:element name="getMessages">
+		<xs:annotation>
+			<xs:documentation>get list of patron's messages</xs:documentation>
+			<xs:documentation>service url: alma/patron/messages</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getMessages -->
+	<xs:element name="getMessagesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="messages" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getMessagesResponse -->
+	<xs:element name="getMessageServices">
+		<xs:annotation>
+			<xs:documentation>get list of message services for which patron has registered</xs:documentation>
+			<xs:documentation>service url: alma/patron/messageServices</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getMessageServices -->
+	<xs:element name="getMessageServicesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element name="messageServices" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of messageService elements (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="messageService" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>message service detail (local definition)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="nofDays" minOccurs="0"/>
+										<xs:element name="sendMethods" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>sequence of sendMethod elements</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="sendMethod" maxOccurs="unbounded">
+														<xs:annotation>
+															<xs:documentation>message communication method</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:attribute name="value" type="messageSendMethod" use="required"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="serviceType" type="messageServiceType" use="required">
+										<xs:annotation>
+											<xs:documentation>type of message service</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="showNofDays" type="simpleOptionType" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getMessageServicesResponse -->
+	<xs:element name="getOrganisationHierarchy">
+		<xs:annotation>
+			<xs:documentation>get LMS organisation hierarchy</xs:documentation>
+			<xs:documentation>service url: alma/organisation/hierarchy</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getOrganisationHierarchy -->
+	<xs:element name="getOrganisationHierarchyResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element name="organisation" minOccurs="0" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>organisation hierarchy (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="branch" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>branch hierarchy (local definition)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="department" minOccurs="0" maxOccurs="unbounded">
+											<xs:annotation>
+												<xs:documentation>department ID (local definition)</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="id" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="id" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getOrganisationHierarchyResponse -->
+	<xs:element name="getOrganisations">
+		<xs:annotation>
+			<xs:documentation>get list of LMS organisation names</xs:documentation>
+			<xs:documentation>service url: alma/organisation/organisation</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getOrganisations -->
+	<xs:element name="getOrganisationsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element name="organisations" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of organisation elements (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="organisation" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>organisation details (local definition)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="codes"/>
+										<xs:element ref="shortnames"/>
+										<xs:element ref="names"/>
+									</xs:sequence>
+									<xs:attribute name="id" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getOrganisationsResponse -->
+	<xs:element name="getOverdueLoans">
+		<xs:annotation>
+			<xs:documentation>get list of patron's overdue loans</xs:documentation>
+			<xs:documentation>service url: alma/patron/loans/overdue</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getOverdueLoans -->
+	<xs:element name="getOverdueLoansResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="loans" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getOverdueLoansResponse -->
+	<xs:element name="getPatronAlternativeCards">
+		<xs:annotation>
+			<xs:documentation>get details of all cards for patron</xs:documentation>
+			<xs:documentation>service url: alma/patron/alternativeCards</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPatronAlternativeCards -->
+	<xs:element name="getPatronAlternativeCardsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="patronCards" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPatronAlternativeCardsResponse -->
+	<xs:element name="getPatronInformation">
+		<xs:annotation>
+			<xs:documentation>get patron information (personal details)</xs:documentation>
+			<xs:documentation>service url: alma/patron/information</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPatronInformation -->
+	<xs:element name="getPatronInformationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="patronInformation" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPatronInformationResponse -->
+	<xs:element name="getPayments">
+		<xs:annotation>
+			<xs:documentation>get historical list of patron's payments</xs:documentation>
+			<xs:documentation>service url: alma/patron/payments</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+			<xs:attribute name="fromDate" use="optional"/>
+			<xs:attribute name="toDate" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPayments -->
+	<xs:element name="getPaymentsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="payments" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPaymentsResponse -->
+	<xs:element name="getPaymentConfirmation">
+		<xs:annotation>
+			<xs:documentation>get confirmation that payment has been completed</xs:documentation>
+			<xs:documentation>service url: alma/patron/payment/confirmation</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="transactionNumber" use="required"/>
+			<xs:attribute name="orderId" use="required"/>
+			<xs:attribute name="amount" use="required"/>
+			<xs:attribute name="fee"/>
+			<xs:attribute name="result" type="paymentResult" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!--- end of getPaymentConfirmation -->
+	<xs:element name="getPaymentConfirmationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="amount"/>
+				<xs:element name="fee">
+					<xs:annotation>
+						<xs:documentation>fee charged</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="value" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="payments" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of payment elements (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="payment" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>payment details (local definition)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="debtType" type="debtTypeChoice" use="required"/>
+									<xs:attribute name="organisationId" use="required"/>
+									<xs:attribute name="paymentAmount" use="required"/>
+									<xs:attribute name="paymentDate" use="required"/>
+									<xs:attribute name="paymentPlace" use="required"/>
+									<xs:attribute name="paymentType" type="paymentTypeChoice" use="required"/>
+									<xs:attribute name="transactionNumber" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPaymentConfirmationResponse -->
+	<xs:element name="getPaymentServiceInformation">
+		<xs:annotation>
+			<xs:documentation>get payment receiver (creditor) details</xs:documentation>
+			<xs:documentation>service url: alma/patron/payment/information</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="amount" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPaymentServiceInformation -->
+	<xs:element name="getPaymentServiceInformationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="orderid">
+					<xs:annotation>
+						<xs:documentation>ID of order against which payment is being made (LMS payment reference)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="amount"/>
+				<xs:element ref="amountInSubunit">
+					<xs:annotation>
+						<xs:documentation>payment amount in the lowest currency unit</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="receiver">
+					<xs:annotation>
+						<xs:documentation>payment receiver (creditor) details</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getPaymentServiceInformationResponse -->
+	<xs:element name="getReadyReservations">
+		<xs:annotation>
+			<xs:documentation>get patron's ready reservations</xs:documentation>
+			<xs:documentation>service url: alma/patron/reservations/ready</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReadyReservations -->
+	<xs:element name="getReadyReservationsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="reservations" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReadyReservationsResponse -->
+	<xs:element name="getReservations">
+		<xs:annotation>
+			<xs:documentation>get patron's reservations</xs:documentation>
+			<xs:documentation>service url: alma/patron/reservations</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReservations -->
+	<xs:element name="getReservationsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="reservations" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReservationsResponse -->
+	<xs:element name="getReservationBranches">
+		<xs:annotation>
+			<xs:documentation>get list of reservation branches</xs:documentation>
+			<xs:documentation>service url: alma/reservation/branches</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="optional"/>
+			<xs:attribute name="pinCode" use="optional"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+			<xs:attribute name="reservable" use="optional"/>
+			<xs:attribute name="reservationType" type="reservationTypeChoice" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReservationBranches -->
+	<xs:element name="getReservationBranchesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="organisations" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReservationBranchesResponse -->
+	<xs:element name="getReservationResponsibleBranches">
+		<xs:annotation>
+			<xs:documentation>get list of reservation responsible branches - not currently used</xs:documentation>
+			<xs:documentation>service url: *** not used ***</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="optional"/>
+			<xs:attribute name="pinCode" use="optional"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+			<xs:attribute name="reservable" use="optional"/>
+			<xs:attribute name="reservationType" type="reservationTypeChoice" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReservationResponsibleBranches -->
+	<xs:element name="getReservationResponsibleBranchesResponse">
+		<xs:annotation>
+			<xs:documentation>not currently used</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="organisations" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getReservationResponsibleBranchesResponse -->
+	<xs:element name="getSimilarCatalogueRecords">
+		<xs:annotation>
+			<xs:documentation>get list of similar catalogue records</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/similar</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="catalogueRecordKey" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getSimilarCatalogueRecords -->
+	<xs:element name="getSimilarCatalogueRecordsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element name="catalogueRecords" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of catalogueRecord elements (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="catalogueRecord" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>local catalogue record element with id attribute only</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="id" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getSimilarCatalogueRecordsResponse -->
+	<xs:element name="getSubLocations">
+		<xs:annotation>
+			<xs:documentation>get LMS sublocation names</xs:documentation>
+			<xs:documentation>service url: alma/organisation/subLocations</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getSubLocations -->
+	<xs:element name="getSubLocationsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="subLocations" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getSubLocationsResponse -->
+	<xs:element name="getVersions">
+		<xs:annotation>
+			<xs:documentation>get software version numbers</xs:documentation>
+			<xs:documentation>service url: *** not yet implemented ***</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getVersions -->
+	<xs:element name="getVersionsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element name="versions" minOccurs="0">
+					<xs:complexType>
+						<xs:attribute name="almaAdapter" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>ALMA adapter version number</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="almaSchema" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>ALMA schema version supported</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="lms" type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>library management system name and version number</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="information" type="xs:string">
+							<xs:annotation>
+								<xs:documentation>optional extra information from the LMS</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of getVersionsResponse -->
+	<xs:element name="removeAddress">
+		<xs:annotation>
+			<xs:documentation>remove address from patron's account</xs:documentation>
+			<xs:documentation>service url: alma/patron/addresses/remove</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="address" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeAddress -->
+	<xs:element name="removeAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="addresses" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeAddressResponse -->
+	<xs:element name="removeEmailAddress">
+		<xs:annotation>
+			<xs:documentation>remove email address from patron's account</xs:documentation>
+			<xs:documentation>service url: alma/patron/email/remove</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="emailAddress" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeEmailAddress -->
+	<xs:element name="removeEmailAddressResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="emailAddresses" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeEmailAddressResponse -->
+	<xs:element name="removeMessageService">
+		<xs:annotation>
+			<xs:documentation>remove message service from patron's account</xs:documentation>
+			<xs:documentation>service url: alma/patron/messageServices/remove</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="serviceType" type="messageServiceType" use="required"/>
+			<xs:attribute name="sendMethod" type="messageSendMethod" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeMessageService -->
+	<xs:element name="removeMessageServiceResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="messageServices" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeMessageServiceResponse -->
+	<xs:element name="removePhoneNumber">
+		<xs:annotation>
+			<xs:documentation>remove phone number from patron's account</xs:documentation>
+			<xs:documentation>service url: alma/patron/phoneNumbers/remove</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="phoneNumber" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removePhoneNumber -->
+	<xs:element name="removePhoneNumberResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="phoneNumbers" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removePhoneNumberResponse -->
+	<xs:element name="removeReservation">
+		<xs:annotation>
+			<xs:documentation>remove reservation from patron's account</xs:documentation>
+			<xs:documentation>service url: alma/patron/reservations/remove</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="reservation" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeReservation -->
+	<xs:element name="removeReservationResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of removeReservationResponse -->
+	<xs:element name="renewLoan">
+		<xs:annotation>
+			<xs:documentation>renew patron's loan</xs:documentation>
+			<xs:documentation>service url: alma/patron/loans/renew</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="organisation" use="optional"/>
+			<xs:attribute name="branches" use="optional"/>
+			<xs:attribute name="loans" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of renewLoan -->
+	<xs:element name="renewLoanResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="loans" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of renewLoanResponse -->
+	<xs:element name="runLmsSearch">
+		<xs:annotation>
+			<xs:documentation>run search on LMS</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/fulltextsearch</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" type="xs:string" use="required"/>
+			<xs:attribute name="searchText" type="xs:string" use="required"/>
+			<xs:attribute name="searchType" type="lmsSearchTypeChoice" use="required"/>
+			<xs:attribute name="startNo" type="xs:int" use="required"/>
+			<xs:attribute name="nofRecords" type="xs:int" use="required"/>
+			<xs:attribute name="organisation"/>
+			<xs:attribute name="branches"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of runLmsSearch -->
+	<xs:element name="runLmsSearchResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="nofRecords"/>
+				<xs:element ref="nofRecordsTotal"/>
+				<xs:element ref="startNo"/>
+				<xs:element ref="stopNo"/>
+				<xs:element name="catalogueRecords" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of catalogueRecord elements (local definition) </xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="catalogueRecord" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>local catalogue record element with id attribute only</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="id" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of runLmsSearchResponse -->
+	<xs:element name="updateCatalogue">
+		<xs:annotation>
+			<xs:documentation>request catalogue updates</xs:documentation>
+			<xs:documentation>service url: alma/catalogue/update</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="nofRecords" use="required"/>
+			<xs:attribute name="systemChangeNumber" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of updateCatalogue -->
+	<xs:element name="updateCatalogueResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="agency"/>
+				<xs:element ref="nofRecordsFetched"/>
+				<xs:element ref="nofRecordsRemaining"/>
+				<xs:element ref="systemChangeNumber"/>
+				<xs:element ref="updates" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of updateCatalogueResponse -->
+	<!-- ==================================================================================== -->
+	<!-- end of top level message elements - from here all entries are in alphabetical order                                                    -->
+	<!-- element definitions are first, followed by simple type definitions                                                                               -->
+	<xs:element name="accessionDate" type="xs:date">
+		<xs:annotation>
+			<xs:documentation>first copy accession date</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of accessionDate element -->
+	<xs:element name="address">
+		<xs:annotation>
+			<xs:documentation>standard address element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="careOf" use="optional"/>
+			<xs:attribute name="city" use="optional"/>
+			<xs:attribute name="country" use="optional"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="streetAddress" use="required"/>
+			<xs:attribute name="type" use="optional"/>
+			<xs:attribute name="zipCode" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of address element -->
+	<xs:element name="addresses">
+		<xs:annotation>
+			<xs:documentation>sequence of address elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="address" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isAddable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addresses element -->
+	<xs:element name="addressType">
+		<xs:annotation>
+			<xs:documentation>LMS address type (first, second etc)</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="addressTypeId" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addressType element -->
+	<xs:element name="addressTypes">
+		<xs:annotation>
+			<xs:documentation>sequence of addressType elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="addressType" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>address type (primary, secondary etc)</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of addressTypes element -->
+	<xs:element name="agency" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Arena agency ID</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of agency element -->
+	<xs:element name="amount">
+		<xs:annotation>
+			<xs:documentation>payment amount</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of amount element -->
+	<xs:element name="amountInSubunit">
+		<xs:annotation>
+			<xs:documentation>payment amount in the lowest curreny unit</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of amountInSubunit element -->
+	<xs:element name="author">
+		<xs:annotation>
+			<xs:documentation>catalogue author text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType mixed="false">
+			<xs:attribute name="value" type="xs:string" use="required"/>
+			<xs:attribute name="role" type="roleType" default="author"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of author element -->
+	<xs:element name="authors">
+		<xs:annotation>
+			<xs:documentation>sequence of author elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="author" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of authors element -->
+	<xs:element name="borrCard">
+		<xs:annotation>
+			<xs:documentation>borrower card (barcode) element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="cardNumber" use="required"/>
+			<xs:attribute name="isValid" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of borrCard element -->
+	<xs:element name="borrCards">
+		<xs:annotation>
+			<xs:documentation>sequence of borrCard elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="borrCard" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isAddable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of borrCards element -->
+	<xs:element name="branch">
+		<xs:annotation>
+			<xs:documentation>agency branch detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="codes"/>
+				<xs:element ref="shortnames"/>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of branch element -->
+	<xs:element name="branches">
+		<xs:annotation>
+			<xs:documentation>sequence of branch elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="branch" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of branches element -->
+	<xs:element name="catalogueRecord">
+		<xs:annotation>
+			<xs:documentation>catalogue record availability</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="isAvailable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="availabilityInformation" type="holdingStatusChoice" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of catalogueRecord -->
+	<xs:element name="catalogueRecords">
+		<xs:annotation>
+			<xs:documentation>sequence of catalogueRecord elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="catalogueRecord" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of catalogueRecords -->
+	<xs:element name="category" type="categoryChoice">
+		<xs:annotation>
+			<xs:documentation>catalogue category text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of category element -->
+	<xs:element name="classificationCode">
+		<xs:annotation>
+			<xs:documentation>catalogue classification code text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of classificationCode element -->
+	<xs:element name="classificationCodes">
+		<xs:annotation>
+			<xs:documentation>sequence of classificationCode elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="classificationCode" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of classificationCodes element -->
+	<xs:element name="code">
+		<xs:annotation>
+			<xs:documentation>code (branch, organisation, location etc) element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="language" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="da_DK"/>
+								<xs:enumeration value="en_GB"/>
+								<xs:enumeration value="fi_FI"/>
+								<xs:enumeration value="sv_SE"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of code element -->
+	<xs:element name="codes">
+		<xs:annotation>
+			<xs:documentation>sequence of code elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="code" maxOccurs="4"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of codes element -->
+	<xs:element name="collection">
+		<xs:annotation>
+			<xs:documentation>collection details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="codes"/>
+				<xs:element ref="shortnames"/>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of collection element -->
+	<xs:element name="collections">
+		<xs:annotation>
+			<xs:documentation>sequence of collection elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="collection" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of collections element -->
+	<xs:element name="contentType" type="contentTypeChoice">
+		<xs:annotation>
+			<xs:documentation>catalogue content type text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of contentType element -->
+	<xs:element name="compositeHolding">
+		<xs:annotation>
+			<xs:documentation>composite holdings - contains either another level of element compositeHolding or a holdings element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="compositeHolding" maxOccurs="unbounded"/>
+				<xs:element ref="holdings"/>
+			</xs:choice>
+			<xs:attribute name="value" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of compositeHolding element -->
+	<xs:element name="compositeHoldings">
+		<xs:annotation>
+			<xs:documentation>sequence of compositeHoldings elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="compositeHolding" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>contains either a holdings element or another level of compositeholding</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of compositeHoldings element -->
+	<xs:element name="contentTypes">
+		<xs:annotation>
+			<xs:documentation>sequence of contentType elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="contentType" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of contentTypes element -->
+	<xs:element name="copyright">
+		<xs:annotation>
+			<xs:documentation>copyright or other rights information</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of copyright element -->
+	<xs:element name="country">
+		<xs:annotation>
+			<xs:documentation>country name in various languages</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="countryId" use="required"/>
+			<xs:attribute name="code" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of country element -->
+	<xs:element name="countries">
+		<xs:annotation>
+			<xs:documentation>sequence of country elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="country" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of countries element -->
+	<xs:element name="coverUrl">
+		<xs:annotation>
+			<xs:documentation>URL for image of cover</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of coverUrl element -->
+	<xs:element name="coverUrls">
+		<xs:annotation>
+			<xs:documentation>sequence of coverUrl elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="coverUrl" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of coverUrls element -->
+	<xs:element name="debt">
+		<xs:annotation>
+			<xs:documentation>debt details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="debtId" use="required"/>
+			<xs:attribute name="debtDate" use="required"/>
+			<xs:attribute name="debtType" type="debtTypeChoice" use="required"/>
+			<xs:attribute name="debtAmount" use="required">
+				<xs:annotation>
+					<xs:documentation>debt amount without currency indicator</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="debtAmountFormatted" use="required">
+				<xs:annotation>
+					<xs:documentation>debt amount with currency indicator</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="debtNote" use="optional"/>
+			<xs:attribute name="organisationId" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of debt element -->
+	<xs:element name="debts">
+		<xs:annotation>
+			<xs:documentation>sequence of debt elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="debt" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="totalDebtAmountFormatted">
+				<xs:annotation>
+					<xs:documentation>total debt amount with currency indicator</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of debts element -->
+	<xs:element name="department">
+		<xs:annotation>
+			<xs:documentation>agency department detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="codes"/>
+				<xs:element ref="shortnames"/>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of department element -->
+	<xs:element name="departments">
+		<xs:annotation>
+			<xs:documentation>sequence of department elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="department" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of departments element -->
+	<xs:element name="description">
+		<xs:annotation>
+			<xs:documentation>catalogue description text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of description element -->
+	<xs:element name="descriptions">
+		<xs:annotation>
+			<xs:documentation>sequence of description elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="description" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of descriptions element -->
+	<xs:element name="detailCatalogueRecord">
+		<xs:annotation>
+			<xs:documentation>full details of catalogue record including holdings</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="authors" minOccurs="0"/>
+				<xs:element ref="copyright" minOccurs="0"/>
+				<xs:element ref="descriptions" minOccurs="0"/>
+				<xs:element ref="eventDates" minOccurs="0"/>
+				<xs:element name="externalUrls" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="externalUrl" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="linkText" use="optional"/>
+									<xs:attribute name="url" type="xs:string"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:choice minOccurs="0">
+					<xs:element ref="compositeHoldings" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>sequence of compositeHoldings elements</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="holdings" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>sequence of holdings elements</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+				<xs:element ref="isbns" minOccurs="0"/>
+				<xs:element ref="issns" minOccurs="0"/>
+				<xs:element ref="languages" minOccurs="0"/>
+				<xs:element ref="linkedCatalogueRecords" minOccurs="0"/>
+				<xs:element ref="notes" minOccurs="0"/>
+				<xs:element ref="numbers" minOccurs="0"/>
+				<xs:element ref="objectDates" minOccurs="0"/>
+				<xs:element ref="provenance" minOccurs="0"/>
+				<xs:element ref="publisher" minOccurs="0"/>
+				<xs:element ref="titles" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="recordType" type="recordTypeChoice" use="optional" default="catalogue"/>
+			<xs:attribute name="category" type="categoryChoice" use="optional"/>
+			<xs:attribute name="classificationCode" use="optional"/>
+			<xs:attribute name="edition" use="optional"/>
+			<xs:attribute name="extent" use="optional"/>
+			<xs:attribute name="hostPublication" use="optional"/>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="alternateId" type="xs:string" use="optional"/>
+			<xs:attribute name="mediaClass" type="mediaClassChoice" use="optional"/>
+			<xs:attribute name="mediaClassIcon" type="mediaClassIconChoice" use="optional"/>
+			<xs:attribute name="openUrl" use="optional"/>
+			<xs:attribute name="publicationYear" type="xs:string" use="optional"/>
+			<xs:attribute name="nofAvailableForLoan" type="xs:int" use="required"/>
+			<xs:attribute name="nofLoansTotal" type="xs:int" use="required"/>
+			<xs:attribute name="nofLoansYear" type="xs:int" use="required"/>
+			<xs:attribute name="nofReservations" type="xs:int" use="required"/>
+			<xs:attribute name="reservable" type="xs:string" use="optional"/>
+			<xs:attribute name="resourceType" type="resourceTypeChoice" use="optional"/>
+			<xs:attribute name="shelfMark" type="xs:string" use="optional"/>
+			<xs:attribute name="showReservationButton" type="simpleOptionType" use="required"/>
+			<xs:attribute name="targetAudience" type="targetAudienceChoice" use="optional"/>
+			<xs:attribute name="titleOriginal" type="xs:string" use="optional"/>
+			<xs:attribute name="titleSeries" type="xs:string" use="optional"/>
+			<xs:attribute name="titleUniform" type="xs:string" use="optional"/>
+			<xs:attribute name="volume" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of detailCatalogueRecord element -->
+	<xs:element name="edition" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue edition text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of edition element -->
+	<xs:element name="emailAddress">
+		<xs:annotation>
+			<xs:documentation>standard email address element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="address" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="optional"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="note" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of emailAddress element -->
+	<xs:element name="emailAddresses">
+		<xs:annotation>
+			<xs:documentation>sequence of emailAddress elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="emailAddress" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isAddable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of emailAddresses element -->
+	<xs:element name="eventDate">
+		<xs:annotation>
+			<xs:documentation>time interval with start and end dates</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="startDate" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:date">
+						<xs:minInclusive value="0001-01-01"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="endDate" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:date">
+						<xs:minInclusive value="0001-01-01"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="note" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of eventDate element -->
+	<xs:element name="eventDates">
+		<xs:annotation>
+			<xs:documentation>sequence of eventDate elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="eventDate" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of dateRanges element -->
+	<xs:element name="exportCatalogueRecord">
+		<xs:annotation>
+			<xs:documentation>full catalogue record element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="facet"/>
+				<xs:element ref="index"/>
+				<xs:element ref="uberkey"/>
+				<xs:element ref="view"/>
+			</xs:sequence>
+			<xs:attribute name="recordType" type="recordTypeChoice" use="optional" default="catalogue"/>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="newTitle" type="simpleOptionType" use="optional" default="yes"/>
+			<xs:attribute name="alternateId" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of exportCatalogueRecord element -->
+	<xs:element name="externalUrl">
+		<xs:annotation>
+			<xs:documentation>catalogue external URL text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="linkText" type="xs:string" use="optional"/>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of externalUrl element -->
+	<xs:element name="externalUrls">
+		<xs:annotation>
+			<xs:documentation>sequence of externalUrl elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="externalUrl" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of externalUrls element -->
+	<xs:element name="facet">
+		<xs:annotation>
+			<xs:documentation>catalogue facet element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="authors" minOccurs="0"/>
+				<xs:element ref="category" minOccurs="0"/>
+				<xs:element ref="classificationCodes" minOccurs="0"/>
+				<xs:element ref="contentTypes" minOccurs="0"/>
+				<xs:element ref="languages" minOccurs="0"/>
+				<xs:element ref="languageOriginal" minOccurs="0"/>
+				<xs:element ref="mediaClass" minOccurs="0"/>
+				<xs:element ref="publicationYear" minOccurs="0"/>
+				<xs:element ref="resourceType" minOccurs="0"/>
+				<xs:element ref="shelfMark" minOccurs="0"/>
+				<xs:element ref="subjects" minOccurs="0"/>
+				<xs:element ref="targetAudience" minOccurs="0"/>
+				<xs:choice>
+					<xs:element ref="seriesTitles" minOccurs="0"/>
+					<xs:element ref="titleSeries" minOccurs="0"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of facet element -->
+	<xs:element name="holding">
+		<xs:annotation>
+			<xs:documentation>holdings details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="branchId" type="xs:string" use="optional"/>
+			<xs:attribute name="collectionId" type="xs:string" use="optional"/>
+			<xs:attribute name="departmentId" type="xs:string" use="optional"/>
+			<xs:attribute name="firstLoanDueDate" type="xs:string" use="optional"/>
+			<xs:attribute name="firstOrderDeliveryDate" type="xs:string" use="optional"/>
+			<xs:attribute name="locationId" type="xs:string" use="optional"/>
+			<xs:attribute name="mapUrl" type="xs:string" use="optional"/>
+			<xs:attribute name="nofAvailableForLoan" type="xs:int" use="required"/>
+			<xs:attribute name="nofCheckedOut" type="xs:int" use="required"/>
+			<xs:attribute name="nofOrdered" type="xs:int" use="required"/>
+			<xs:attribute name="nofReference" type="xs:int" use="required"/>
+			<xs:attribute name="nofTotal" type="xs:int" use="required"/>
+			<xs:attribute name="organisationId" type="xs:string" use="required"/>
+			<xs:attribute name="reservable" type="xs:string" use="optional"/>
+			<xs:attribute name="shelfMark" type="xs:string" use="optional"/>
+			<xs:attribute name="showReservationButton" type="simpleOptionType" use="required"/>
+			<xs:attribute name="status" type="holdingStatusChoice" use="required"/>
+			<xs:attribute name="subLocationId" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of holding element -->
+	<xs:element name="holdings">
+		<xs:annotation>
+			<xs:documentation>sequence of holding elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="holding" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>details of holdings</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of holdings element -->
+	<xs:element name="index">
+		<xs:annotation>
+			<xs:documentation>catalogue index element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="accessionDate" minOccurs="0"/>
+				<xs:element ref="authors" minOccurs="0"/>
+				<xs:element ref="category" minOccurs="0"/>
+				<xs:element ref="classificationCodes" minOccurs="0"/>
+				<xs:element ref="contentTypes" minOccurs="0"/>
+				<xs:element ref="descriptions" minOccurs="0"/>
+				<xs:element ref="edition" minOccurs="0"/>
+				<xs:element ref="eventDates" minOccurs="0"/>
+				<xs:element name="holdings" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>sequence of holding elements (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="holding" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>holding element (local definition)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="organisationId" use="required"/>
+									<xs:attribute name="branchId"/>
+									<xs:attribute name="departmentId"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="languages" minOccurs="0"/>
+				<xs:element ref="languageOriginal" minOccurs="0"/>
+				<xs:element ref="mediaClass" minOccurs="0"/>
+				<xs:element name="note" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>catalogue note text</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="numbers" minOccurs="0"/>
+				<xs:element ref="objectDates" minOccurs="0"/>
+				<xs:element ref="others" minOccurs="0"/>
+				<xs:element ref="publicationYear" minOccurs="0"/>
+				<xs:element ref="publisher" minOccurs="0"/>
+				<xs:element ref="recordControlNumber" minOccurs="0"/>
+				<xs:element ref="resourceType" minOccurs="0"/>
+				<xs:element ref="responsibility" minOccurs="0"/>
+				<xs:element ref="shelfMark" minOccurs="0"/>
+				<xs:element ref="subjects" minOccurs="0"/>
+				<xs:element ref="targetAudience" minOccurs="0"/>
+				<xs:element ref="titles" minOccurs="0"/>
+				<xs:element ref="titleMain" minOccurs="0"/>
+				<xs:element ref="titleOriginal" minOccurs="0"/>
+				<xs:choice>
+					<xs:element ref="seriesTitles" minOccurs="0"/>
+					<xs:element ref="titleSeries" minOccurs="0"/>
+				</xs:choice>
+				<xs:element ref="sortAuthor" minOccurs="0"/>
+				<xs:element ref="sortPublicationYear" minOccurs="0"/>
+				<xs:element ref="sortTitle" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of index element -->
+	<xs:element name="isbn">
+		<xs:annotation>
+			<xs:documentation>catalogue ISBN text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of isbn element -->
+	<xs:element name="isbns">
+		<xs:annotation>
+			<xs:documentation>sequence of isbn elements - deprecated</xs:documentation>
+		</xs:annotation>
+		<!-- the 'isbns' element should no longer be used - now that the 'numbers' element has a 'type' attribute this should now be used to hold ISBNs -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="isbn" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of isbns element -->
+	<xs:element name="issn">
+		<xs:annotation>
+			<xs:documentation>catalogue ISSN text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of issn element -->
+	<xs:element name="issns">
+		<xs:annotation>
+			<xs:documentation>sequence of issn elements - deprecated</xs:documentation>
+		</xs:annotation>
+		<!-- the 'issns' element should no longer be used - now that the 'numbers' element has a 'type' attribute this should now be used to hold ISSNs -->
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="issn" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of issns element -->
+	<xs:element name="language">
+		<xs:annotation>
+			<xs:documentation>catalogue language code</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of language element -->
+	<xs:element name="languages">
+		<xs:annotation>
+			<xs:documentation>sequence of language elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="language" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of languages element -->
+	<xs:element name="languageOriginal" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue original language code</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of languageOriginal element -->
+	<xs:element name="linkedCatalogueRecord">
+		<xs:annotation>
+			<xs:documentation>catalogue id of linked catalogue record</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of linkedCatalogueRecord element -->
+	<xs:element name="linkedCatalogueRecords">
+		<xs:annotation>
+			<xs:documentation>sequence of linkedCatalogue record elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="linkedCatalogueRecord" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of linkedCatalogueRecords element -->
+	<xs:element name="loan">
+		<xs:annotation>
+			<xs:documentation>details of loan</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="loanIsRenewable">
+					<xs:annotation>
+						<xs:documentation>renewable information</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element ref="note" minOccurs="0"/>
+				<xs:element name="catalogueRecord">
+					<xs:annotation>
+						<xs:documentation>local catalogue record element with id attribute only</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="id" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="loanBranch" use="required"/>
+			<xs:attribute name="loanDate" use="required"/>
+			<xs:attribute name="loanDueDate" use="required"/>
+			<xs:attribute name="organisationId" use="required"/>
+			<xs:attribute name="remainingRenewals" type="xs:nonNegativeInteger" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of loan element -->
+	<xs:element name="loanIsRenewable">
+		<xs:annotation>
+			<xs:documentation>renewable status of loan</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="simpleOptionType" use="required">
+				<xs:annotation>
+					<xs:documentation>loan is renewable, 'yes' or 'no'</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+  			<!-- DDElibra extensions begin -->
+  			<xs:attribute name="message" type="messageType" use="optional">
+  			<!-- DDElibra extensions end -->
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of loanIsRenewable element -->
+  	<xs:simpleType name="messageType">
+  		<xs:annotation>
+  			<xs:documentation>reason why loan cannot be renewed</xs:documentation>
+  		</xs:annotation>
+  		<xs:restriction base="xs:string">
+  			<xs:enumeration value="isLoanedToday"/>
+  			<xs:enumeration value="isRenewedToday"/>
+  			<xs:enumeration value="isOverdue"/>
+  			<xs:enumeration value="patronIsDeniedLoan"/>
+  			<xs:enumeration value="patronHasDebt"/>
+  			<xs:enumeration value="maxNofRenewals"/>
+  			<xs:enumeration value="patronIsInvoiced"/>
+  			<xs:enumeration value="copyHasSpecialCircCat"/>
+  			<xs:enumeration value="copyIsReserved"/>
+  			<xs:enumeration value="renewalIsDenied"/>
+  		</xs:restriction>
+  	</xs:simpleType>
+	<xs:element name="loans">
+		<xs:annotation>
+			<xs:documentation>sequence of loan elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="loan" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of loans element -->
+	<xs:element name="location">
+		<xs:annotation>
+			<xs:documentation>agency location details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="codes"/>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of location element -->
+	<xs:element name="locations">
+		<xs:annotation>
+			<xs:documentation>sequence of location elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="location" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of locations element -->
+	<xs:element name="mediaClass" type="mediaClassChoice">
+		<xs:annotation>
+			<xs:documentation>catalogue media class text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of mediaClass element -->
+	<xs:element name="mediaClassIcon" type="mediaClassIconChoice">
+		<xs:annotation>
+			<xs:documentation>catalogue media class icon text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of mediaClassIcon element -->
+	<xs:element name="mediaType">
+		<xs:annotation>
+			<xs:documentation>agency media type detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="mediaTypeId" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of mediaType element -->
+	<xs:element name="mediaTypes">
+		<xs:annotation>
+			<xs:documentation>sequence of mediaType elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="mediaType" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of mediaTypes element -->
+	<xs:element name="message">
+		<xs:annotation>
+			<xs:documentation>patron message detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="messageId" use="required"/>
+			<xs:attribute name="body" use="required"/>
+			<xs:attribute name="date" use="required"/>
+			<xs:attribute name="organisationId" use="required"/>
+			<xs:attribute name="subject" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of message element -->
+	<xs:element name="messages">
+		<xs:annotation>
+			<xs:documentation>sequence of message elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="message" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of messages element -->
+	<xs:element name="messageService">
+		<xs:annotation>
+			<xs:documentation>standard message service element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="nofDays" minOccurs="0"/>
+				<xs:element ref="sendMethods" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>sequence of sendMethod elements</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required">
+				<xs:annotation>
+					<xs:documentation>service is active</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="required">
+				<xs:annotation>
+					<xs:documentation>service can be deleted</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required">
+				<xs:annotation>
+					<xs:documentation>service can be edited</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="serviceType" type="messageServiceType" use="required">
+				<xs:annotation>
+					<xs:documentation>type of message service</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of messageService element -->
+	<xs:element name="messageServices">
+		<xs:annotation>
+			<xs:documentation>sequence of messageService elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="messageService" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isAddable" type="simpleOptionType" use="required">
+				<xs:annotation>
+					<xs:documentation>more message services can be added</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of messageServices element -->
+	<xs:element name="name">
+		<xs:annotation>
+			<xs:documentation>name (branch, organisation, location etc) element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="language" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="da_DK"/>
+								<xs:enumeration value="en_GB"/>
+								<xs:enumeration value="fi_FI"/>
+								<xs:enumeration value="sv_SE"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of name element -->
+	<xs:element name="names">
+		<xs:annotation>
+			<xs:documentation>sequence of name elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="name" maxOccurs="4"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of names element -->
+	<xs:element name="nofDays">
+		<xs:annotation>
+			<xs:documentation>message service warning period</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" use="optional"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of nofDays element -->
+	<xs:element name="nofRecords" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>number of records in response</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of nofRecords element -->
+	<xs:element name="nofRecordsFetched" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>number of records in catalogue update response</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of nofRecordsTotal element -->
+	<xs:element name="nofRecordsRemaining" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>number of records that remain to be fetched</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of nofRecordsTotal element -->
+	<xs:element name="nofRecordsTotal" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>total number of records in list</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of nofRecordsTotal element -->
+	<xs:element name="note">
+		<xs:annotation>
+			<xs:documentation>standard note (free text) element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of note element -->
+	<xs:element name="notes">
+		<xs:annotation>
+			<xs:documentation>sequence of note elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="note" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of notes element -->
+	<xs:element name="number">
+		<xs:annotation>
+			<xs:documentation>catalogue control number text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+			<xs:attribute name="type" type="controlNumberType" use="optional" default="unknown"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of number element -->
+	<xs:element name="numbers">
+		<xs:annotation>
+			<xs:documentation>sequence of number elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="number" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of numbers element -->
+	<xs:element name="objectDate">
+		<xs:annotation>
+			<xs:documentation>time interval with start and end years</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="startYear" type="xs:gYear" use="required"/>
+			<xs:attribute name="endYear" type="xs:gYear" use="required"/>
+			<xs:attribute name="note" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of objectDate element -->
+	<xs:element name="objectDates">
+		<xs:annotation>
+			<xs:documentation>sequence of objectDate elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="objectDate" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of objectDates element -->
+	<xs:element name="orderid">
+		<xs:annotation>
+			<xs:documentation>ID of order against which payment is being made</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of orderId element -->
+	<xs:element name="organisation">
+		<xs:annotation>
+			<xs:documentation>agency organisation detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="codes"/>
+				<xs:element ref="shortnames"/>
+				<xs:element ref="names"/>
+				<xs:element ref="branches" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of organisation element -->
+	<xs:element name="organisations">
+		<xs:annotation>
+			<xs:documentation>sequence of organisation elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="organisation" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of organisations element -->
+	<xs:element name="other">
+		<xs:annotation>
+			<xs:documentation>catalogue other text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of other element -->
+	<xs:element name="others">
+		<xs:annotation>
+			<xs:documentation>sequence of other elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="other" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of others element -->
+	<xs:element name="patronCard">
+		<xs:annotation>
+			<xs:documentation>details for a patron card</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="number" type="xs:string" use="required"/>
+			<xs:attribute name="pinCode" type="xs:string" use="required"/>
+			<xs:attribute name="isValid" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of patronCard element -->
+	<xs:element name="patronCards">
+		<xs:annotation>
+			<xs:documentation>sequence of patronCard elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="patronCard" maxOccurs="unbounded">
+					<xs:annotation>
+						<xs:documentation>details for a patron card</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of patronCards element -->
+	<xs:element name="patronInformation">
+		<xs:annotation>
+			<xs:documentation>patron information response</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="addresses" minOccurs="0"/>
+				<xs:element ref="borrCards" minOccurs="0"/>
+				<xs:element ref="emailAddresses" minOccurs="0"/>
+				<xs:element ref="messageServices" minOccurs="0"/>
+				<xs:element ref="phoneNumbers" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="patronId" use="required"/>
+			<xs:attribute name="patronName" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of patronInformation element -->
+	<xs:element name="payment">
+		<xs:annotation>
+			<xs:documentation>payment details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="paymentId" use="required"/>
+			<xs:attribute name="debtType" type="debtTypeChoice" use="required"/>
+			<xs:attribute name="organisationId" use="required"/>
+			<xs:attribute name="paymentAmount" use="required"/>
+			<xs:attribute name="paymentDate" use="required"/>
+			<xs:attribute name="paymentPlace" use="optional"/>
+			<xs:attribute name="paymentType" type="paymentTypeChoice" use="required"/>
+			<xs:attribute name="transactionNumber" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of payment element -->
+	<xs:element name="payments">
+		<xs:annotation>
+			<xs:documentation>sequence of payment elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="payment" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of payments element -->
+	<xs:element name="phoneNumber">
+		<xs:annotation>
+			<xs:documentation>standard phone number element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="sms"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="country" use="optional"/>
+			<xs:attribute name="showCountry" type="simpleOptionType" use="optional" default="no"/>
+			<xs:attribute name="areaCode" use="optional"/>
+			<xs:attribute name="showArea" type="simpleOptionType" use="optional" default="no"/>
+			<xs:attribute name="localCode" use="required"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of phoneNumber element -->
+	<xs:element name="phoneNumbers">
+		<xs:annotation>
+			<xs:documentation>sequence of phoneNumber elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="phoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isAddable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of phoneNumber element -->
+	<xs:element name="provenance">
+		<xs:annotation>
+			<xs:documentation>provenance or ownership information</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of provenance element -->
+	<xs:element name="publicationYear" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue publication year</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of publicationYear element -->
+	<xs:element name="publisher" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue publisher</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of publisher element -->
+	<xs:element name="receiver">
+		<xs:annotation>
+			<xs:documentation>payment receiver details</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="address">
+					<xs:annotation>
+						<xs:documentation>creditors address (local definition)</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="streetAddress" use="required"/>
+						<xs:attribute name="zipCode" use="optional"/>
+						<xs:attribute name="city" use="optional"/>
+						<xs:attribute name="country" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" use="required"/>
+			<xs:attribute name="phoneNumber" use="optional"/>
+			<xs:attribute name="faxNumber" use="optional"/>
+			<xs:attribute name="emailAddress" use="optional"/>
+			<xs:attribute name="organisationNumber" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of receiver element -->
+	<xs:element name="recordControlNumber" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue record control number (unique key, ID)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of recordControlNumber element -->
+	<xs:element name="recordSorting" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue record sorting information (secondary sort key)</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of recordSorting element -->
+	<xs:element name="reservation">
+		<xs:annotation>
+			<xs:documentation>standard reservation element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="catalogueRecord">
+					<xs:annotation>
+						<xs:documentation>local catalogue record element with id attribute only</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="id" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="note" minOccurs="0"/>
+				<xs:element ref="reservationStatus" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="createDate" use="required"/>
+			<xs:attribute name="group" use="optional"/>
+			<xs:attribute name="groupSequenceNo" use="optional"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="organisationId" use="required"/>
+			<xs:attribute name="pickUpExpireDate" use="optional"/>
+			<xs:attribute name="pickUpNo" use="optional"/>
+			<xs:attribute name="queueNo" use="optional"/>
+			<xs:attribute name="reservationPickUpBranch" use="required"/>
+			<xs:attribute name="reservationType" type="reservationTypeChoice" use="optional"/>
+			<xs:attribute name="status" type="reservationStateType" use="optional"/>
+			<xs:attribute name="validFromDate" use="required"/>
+			<xs:attribute name="validToDate" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of reservation element -->
+	<xs:element name="reservations">
+		<xs:annotation>
+			<xs:documentation>sequence of reservation elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="reservation" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of reservations element -->
+	<xs:element name="reservationStatus">
+		<xs:annotation>
+			<xs:documentation>choice of reservation status</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="reservationOk"/>
+						<xs:enumeration value="reservationNotOk"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="key" use="optional">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="reservationAlreadyFilled"/>
+						<xs:enumeration value="reservationAlreadyReserved"/>
+						<xs:enumeration value="reservationDenied"/>
+						<xs:enumeration value="reservationInvalidExpireDate"/>
+						<xs:enumeration value="reservationLoanOnCopy"/>
+						<xs:enumeration value="reservationNoExpiry"/>
+						<xs:enumeration value="reservationNoHolding"/>
+						<xs:enumeration value="reservationNoItemsAvailable"/>
+						<xs:enumeration value="reservationNoPeriodicalPermission"/>
+						<xs:enumeration value="reservationNoPermission"/>
+						<xs:enumeration value="reservationNotForLoan"/>
+						<xs:enumeration value="reservationOnShelf"/>
+						<xs:enumeration value="reservationPatronBlocked"/>
+						<xs:enumeration value="reservationPatronMaxReservations"/>
+						<xs:enumeration value="reservationPatronUnderAged"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of reservationStatus -->
+	<xs:element name="resourceType" type="resourceTypeChoice">
+		<xs:annotation>
+			<xs:documentation>catalogue resource type</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of resourceType element -->
+	<xs:element name="responsibility" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>statement of responsibility</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of responsibility element -->
+	<xs:element name="sendMethod">
+		<xs:annotation>
+			<xs:documentation>standard message communication method element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="messageSendMethod" use="required"/>
+			<xs:attribute name="isActive" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isDeletable" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of sendMethod element -->
+	<xs:element name="sendMethods">
+		<xs:annotation>
+			<xs:documentation>sequence of sendMethod elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="sendMethod" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="isAddable" type="simpleOptionType" use="required">
+				<xs:annotation>
+					<xs:documentation>more send methods can be added</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of sendMethods element -->
+	<xs:element name="seriesTitles">
+		<xs:annotation>
+			<xs:documentation>sequence of titleSeries elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="titleSeries" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of seriesTitles element -->
+	<xs:element name="shelfMark" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue shelf mark</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of shelfMark element -->
+	<xs:element name="shortname">
+		<xs:annotation>
+			<xs:documentation>short name (branch, organisation, location etc) element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="language" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="da_DK"/>
+								<xs:enumeration value="en_GB"/>
+								<xs:enumeration value="fi_FI"/>
+								<xs:enumeration value="sv_SE"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of shortName element -->
+	<xs:element name="shortnames">
+		<xs:annotation>
+			<xs:documentation>sequence of shortname elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="shortname" maxOccurs="4"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of shortNames element -->
+	<xs:element name="sms">
+		<xs:annotation>
+			<xs:documentation>standard sms (phone text) element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="useForSms" type="simpleOptionType" use="required"/>
+			<xs:attribute name="isEditable" type="simpleOptionType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of sms element -->
+	<xs:element name="sortAuthor" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>author text for sorting</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of sortAuthor element -->
+	<xs:element name="sortPublicationYear" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>publication year for sorting</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of sortPublicationYear element -->
+	<xs:element name="sortTitle" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>title text for sorting</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of sortTitle element -->
+	<xs:element name="startNo" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>first record number in response</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of startNo element -->
+	<xs:element name="status">
+		<xs:annotation>
+			<xs:documentation>ALMA status element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" use="required">
+				<xs:annotation>
+					<xs:documentation>either 'ok' or 'error'</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="error"/>
+						<xs:enumeration value="ok"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="key" use="optional">
+				<xs:annotation>
+					<xs:documentation>optional error message text</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="unsupportedMethodCall"/>
+						<xs:enumeration value="addressNotFound"/>
+						<xs:enumeration value="addressOfTypeExists"/>
+						<xs:enumeration value="blockedBorrCard"/>
+						<xs:enumeration value="borrCardNotFound"/>
+						<xs:enumeration value="catalogueRecordNotFound"/>
+						<xs:enumeration value="databaseError"/>
+						<xs:enumeration value="emailAddressNotFound"/>
+						<xs:enumeration value="expiredAccount"/>
+						<xs:enumeration value="expiredAccountCard"/>
+						<xs:enumeration value="invalidAccountCard"/>
+						<xs:enumeration value="invalidAddressType"/>
+						<xs:enumeration value="invalidAmount"/>
+						<xs:enumeration value="invalidBorrCard"/>
+						<xs:enumeration value="invalidCountry"/>
+						<xs:enumeration value="invalidDateFormat"/>
+						<xs:enumeration value="invalidMessageService"/>
+						<xs:enumeration value="invalidPatron"/>
+						<xs:enumeration value="invalidPinCode"/>
+						<xs:enumeration value="invalidSearch"/>
+						<xs:enumeration value="invalidUser"/>
+						<xs:enumeration value="loanNotFound"/>
+						<xs:enumeration value="moduleNotAvailable"/>
+						<xs:enumeration value="noAccountFound"/>
+						<xs:enumeration value="noRecieverInformationFound"/>
+						<xs:enumeration value="noReceiverInformationFound"/>
+						<xs:enumeration value="phoneNumberNotFound"/>
+						<xs:enumeration value="reservationNotFound"/>
+						<!-- DDElibra extensions begin -->
+						<xs:enumeration value="invalidAbsentDate"/>
+						<xs:enumeration value="invalidCopyNumber"/>
+						<xs:enumeration value="invalidFeeStatus"/>
+						<xs:enumeration value="invalidFeeType"/>
+						<!-- DDElibra extensions end -->
+					</xs:restriction>
+					<!-- Note - the string ''noRecieverInformationFound" is incorrect - the correct version		-->
+					<!-- noReceiverInformationFound' has been added and  the incorrect version has been	-->
+					<!-- retained  for backwards compatibility - it will be removed in a later release				-->
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of status element -->
+	<xs:element name="stopNo" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>last record number in response</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of stopNo element -->
+	<xs:element name="subject">
+		<xs:annotation>
+			<xs:documentation>catalogue subject text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of subject element -->
+	<xs:element name="subjects">
+		<xs:annotation>
+			<xs:documentation>sequence of subject elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="subject" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of subjects element -->
+	<xs:element name="subLocation">
+		<xs:annotation>
+			<xs:documentation>agency sublocation detail</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="codes"/>
+				<xs:element ref="shortnames"/>
+				<xs:element ref="names"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of subLocation element -->
+	<xs:element name="subLocations">
+		<xs:annotation>
+			<xs:documentation>sequence of subLocation elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="subLocation" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of subLocations element -->
+	<xs:element name="systemChangeNumber" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue update change number</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of systemChangeNumber element -->
+	<xs:element name="targetAudience" type="targetAudienceChoice">
+		<xs:annotation>
+			<xs:documentation>catalogue target audience code</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of targetAudience element -->
+	<xs:element name="title">
+		<xs:annotation>
+			<xs:documentation>catalogue title text</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of title element -->
+	<xs:element name="titleMain" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue main title text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of titleMain element element -->
+	<xs:element name="titleOriginal" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue original title text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of titleOriginal element -->
+	<xs:element name="titleSeries" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>catalogue series title text</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- end of titleSeries element -->
+	<xs:element name="titles">
+		<xs:annotation>
+			<xs:documentation>sequence of title elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="title" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of titles element -->
+	<xs:element name="uberkey">
+		<xs:annotation>
+			<xs:documentation>catalogue uberkey </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="authors" minOccurs="0"/>
+				<xs:element ref="isbns" minOccurs="0"/>
+				<xs:element ref="issns" minOccurs="0"/>
+				<xs:element ref="language" minOccurs="0"/>
+				<xs:element ref="mediaClass" minOccurs="0"/>
+				<xs:element ref="other" minOccurs="0"/>
+				<xs:element ref="recordControlNumber" minOccurs="0"/>
+				<xs:element ref="title" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of uberkey element -->
+	<xs:element name="update">
+		<xs:annotation>
+			<xs:documentation>single catalogue update record</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="exportCatalogueRecord" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="date" use="required"/>
+			<xs:attribute name="type" type="updateType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of update element -->
+	<xs:element name="updates">
+		<xs:annotation>
+			<xs:documentation>sequence of update elements</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="update" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of updates element -->
+	<xs:element name="view">
+		<xs:annotation>
+			<xs:documentation>catalogue view element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="accessionDate" minOccurs="0"/>
+				<xs:choice>
+					<xs:element ref="author" minOccurs="0"/>
+					<xs:element ref="authors" minOccurs="0"/>
+				</xs:choice>
+				<xs:element ref="category" minOccurs="0"/>
+				<xs:element ref="classificationCodes" minOccurs="0"/>
+				<xs:element ref="contentTypes" minOccurs="0"/>
+				<xs:element ref="coverUrls" minOccurs="0"/>
+				<xs:element ref="descriptions" minOccurs="0"/>
+				<xs:element ref="edition" minOccurs="0"/>
+				<xs:element ref="eventDates" minOccurs="0"/>
+				<xs:element ref="externalUrls" minOccurs="0"/>
+				<xs:element ref="isbns" minOccurs="0"/>
+				<xs:element ref="issns" minOccurs="0"/>
+				<xs:element ref="languages" minOccurs="0"/>
+				<xs:element ref="languageOriginal" minOccurs="0"/>
+				<xs:element ref="mediaClass" minOccurs="0"/>
+				<xs:element ref="mediaClassIcon" minOccurs="0"/>
+				<xs:element ref="notes" minOccurs="0"/>
+				<xs:element ref="numbers" minOccurs="0"/>
+				<xs:element ref="objectDates" minOccurs="0"/>
+				<xs:element ref="publicationYear" minOccurs="0"/>
+				<xs:element ref="publisher" minOccurs="0"/>
+				<xs:element ref="recordControlNumber" minOccurs="0"/>
+				<xs:element ref="recordSorting" minOccurs="0"/>
+				<xs:element ref="resourceType" minOccurs="0"/>
+				<xs:element ref="responsibility" minOccurs="0"/>
+				<xs:element ref="shelfMark" minOccurs="0"/>
+				<xs:element ref="subjects" minOccurs="0"/>
+				<xs:element ref="targetAudience" minOccurs="0"/>
+				<xs:element ref="title" minOccurs="0"/>
+				<xs:element ref="titleMain" minOccurs="0"/>
+				<xs:element ref="titleOriginal" minOccurs="0"/>
+				<xs:choice>
+					<xs:element ref="seriesTitles" minOccurs="0"/>
+					<xs:element ref="titleSeries" minOccurs="0"/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<!-- end of view element -->
+	<!-- ==================================================================================== -->
+	<!-- end of elements                                                                                                                                                  -->
+	<!-- simple type definitions follow in alphabetical order                                                                                                  -->
+	<xs:simpleType name="categoryChoice">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue category</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="fictionCategory"/>
+			<xs:enumeration value="nonFictionCategory"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of categoryChoice type -->
+	<xs:simpleType name="contentTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue content type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="abstractSummary"/>
+			<xs:enumeration value="bibliography"/>
+			<xs:enumeration value="calendar"/>
+			<xs:enumeration value="comicGraphicNovel"/>
+			<xs:enumeration value="catalog"/>
+			<xs:enumeration value="catalogue"/>
+			<xs:enumeration value="dictionary"/>
+			<xs:enumeration value="directory"/>
+			<xs:enumeration value="discography"/>
+			<xs:enumeration value="drama"/>
+			<xs:enumeration value="encyclopedia"/>
+			<xs:enumeration value="essay"/>
+			<xs:enumeration value="filmography"/>
+			<xs:enumeration value="handbook"/>
+			<xs:enumeration value="humorSatire"/>
+			<xs:enumeration value="index"/>
+			<xs:enumeration value="lawReportDigest"/>
+			<xs:enumeration value="legalArticle"/>
+			<xs:enumeration value="legalCaseNotes"/>
+			<xs:enumeration value="legislation"/>
+			<xs:enumeration value="letter"/>
+			<xs:enumeration value="mixedForm"/>
+			<xs:enumeration value="novel"/>
+			<xs:enumeration value="offprint"/>
+			<xs:enumeration value="patentDocument"/>
+			<xs:enumeration value="poetry"/>
+			<xs:enumeration value="programmedText"/>
+			<xs:enumeration value="review"/>
+			<xs:enumeration value="shortStory"/>
+			<xs:enumeration value="speach"/>
+			<xs:enumeration value="speech"/>
+			<xs:enumeration value="standardSpecification"/>
+			<xs:enumeration value="statistics"/>
+			<xs:enumeration value="surveyLiterature"/>
+			<xs:enumeration value="thesis"/>
+			<xs:enumeration value="technicalReport"/>
+			<xs:enumeration value="treaty"/>
+			<xs:enumeration value="yearbook"/>
+		</xs:restriction>
+		<!-- Note - the strings 'catalog' and 'speach' are incorrect - the correct versions 'catalogue' and 'speech'		-->
+		<!-- have been added and  the incorrect versions have been retained  for backwards compatibility - they	-->
+		<!-- will be removed in a later release																									-->
+	</xs:simpleType>
+	<!-- end of contentTypeChoice type -->
+	<xs:simpleType name="controlNumberType">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue control number type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="ean"/>
+			<xs:enumeration value="isan"/>
+			<xs:enumeration value="isbn"/>
+			<xs:enumeration value="ismn"/>
+			<xs:enumeration value="isrc"/>
+			<xs:enumeration value="issn"/>
+			<xs:enumeration value="istc"/>
+			<xs:enumeration value="iswc"/>
+			<xs:enumeration value="lcn"/>
+			<xs:enumeration value="nbn"/>
+			<xs:enumeration value="sici"/>
+			<xs:enumeration value="upc"/>
+			<xs:enumeration value="unknown"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of controlNumberType type -->
+	<xs:simpleType name="debtTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of debt type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="deleteReservationFeeDebt"/>
+			<xs:enumeration value="emailReminderFeeDebt"/>
+			<xs:enumeration value="illFeeDebt"/>
+			<xs:enumeration value="illReservationFeeDebt"/>
+			<xs:enumeration value="loanFeeDebt"/>
+			<xs:enumeration value="messageFeeDebt"/>
+			<xs:enumeration value="otherFeeDebt"/>
+			<xs:enumeration value="overdueFeeDebt"/>
+			<xs:enumeration value="overdueFeeInvoiceDebt"/>
+			<xs:enumeration value="photocopyFeeDebt"/>
+			<xs:enumeration value="renewFeeDebt"/>
+			<xs:enumeration value="replacementFeeDebt"/>
+			<xs:enumeration value="reservationFeeDebt"/>
+			<xs:enumeration value="reservationPickupFeeDebt"/>
+			<xs:enumeration value="smsIllFeeDebt"/>
+			<xs:enumeration value="smsRecall1FeeDebt"/>
+			<xs:enumeration value="smsRecall2FeeDebt"/>
+			<xs:enumeration value="smsRecall3FeeDebt"/>
+			<xs:enumeration value="smsRecall4FeeDebt"/>
+			<xs:enumeration value="smsRecall5FeeDebt"/>
+			<xs:enumeration value="smsReminderFeeDebt"/>
+			<xs:enumeration value="smsReservationFeeDebt"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of debtTypeChoice -->
+	<xs:simpleType name="holdingStatusChoice">
+		<xs:annotation>
+			<xs:documentation>choice of holding status</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="availableForLoan"/>
+			<xs:enumeration value="checkedOut"/>
+			<xs:enumeration value="inAcquisition"/>
+			<xs:enumeration value="inProduction"/>
+			<xs:enumeration value="internetAccessible"/>
+			<xs:enumeration value="nonAvailableForLoan"/>
+			<xs:enumeration value="notAvailable"/>
+			<xs:enumeration value="noHolding"/>
+			<xs:enumeration value="noReservableCopies"/>
+			<xs:enumeration value="onLoan"/>
+			<xs:enumeration value="openLoan"/>
+			<xs:enumeration value="ordered"/>
+			<xs:enumeration value="overdueLoan"/>
+			<xs:enumeration value="periodical"/>
+			<xs:enumeration value="quarantined"/>
+			<xs:enumeration value="referenceOnly"/>
+			<xs:enumeration value="returnedToday"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of holdingStatusChoice type -->
+	<xs:simpleType name="lmsSearchTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of LMS back end search type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="fullText"/>
+			<xs:enumeration value="namedList"/>
+			<xs:enumeration value="native"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of lmsSearchTypeChoice type -->
+	<xs:simpleType name="mediaClassChoice">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue media class</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="article"/>
+			<xs:enumeration value="blueray"/>
+			<xs:enumeration value="book"/>
+			<xs:enumeration value="braille"/>
+			<xs:enumeration value="cassette"/>
+			<xs:enumeration value="cd"/>
+			<xs:enumeration value="cdBook"/>
+			<xs:enumeration value="cdAndBook"/>
+			<xs:enumeration value="daisy"/>
+			<xs:enumeration value="data"/>
+			<xs:enumeration value="dissertation"/>
+			<xs:enumeration value="document"/>
+			<xs:enumeration value="dvd"/>
+			<xs:enumeration value="eBook"/>
+			<xs:enumeration value="eMusic"/>
+			<xs:enumeration value="ePeriodical"/>
+			<xs:enumeration value="internet"/>
+			<xs:enumeration value="map"/>
+			<xs:enumeration value="microFilm"/>
+			<xs:enumeration value="music"/>
+			<xs:enumeration value="newspaper"/>
+			<xs:enumeration value="otherMaterial"/>
+			<xs:enumeration value="periodical"/>
+			<xs:enumeration value="picture"/>
+			<xs:enumeration value="serial"/>
+			<xs:enumeration value="sheetMusic"/>
+			<xs:enumeration value="talkingBook"/>
+			<xs:enumeration value="video"/>
+			<xs:enumeration value="videoGame"/>
+			<xs:enumeration value="vinyl"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of mediaClassChoice type -->
+	<xs:simpleType name="mediaClassIconChoice">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue media class icon</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="article"/>
+			<xs:enumeration value="blueray"/>
+			<xs:enumeration value="book"/>
+			<xs:enumeration value="braille"/>
+			<xs:enumeration value="cassette"/>
+			<xs:enumeration value="cd"/>
+			<xs:enumeration value="cdBook"/>
+			<xs:enumeration value="cdAndBook"/>
+			<xs:enumeration value="daisy"/>
+			<xs:enumeration value="data"/>
+			<xs:enumeration value="dissertation"/>
+			<xs:enumeration value="document"/>
+			<xs:enumeration value="dvd"/>
+			<xs:enumeration value="eBook"/>
+			<xs:enumeration value="eMusic"/>
+			<xs:enumeration value="ePeriodical"/>
+			<xs:enumeration value="internet"/>
+			<xs:enumeration value="map"/>
+			<xs:enumeration value="microFilm"/>
+			<xs:enumeration value="music"/>
+			<xs:enumeration value="newspaper"/>
+			<xs:enumeration value="otherMaterial"/>
+			<xs:enumeration value="periodical"/>
+			<xs:enumeration value="picture"/>
+			<xs:enumeration value="serial"/>
+			<xs:enumeration value="sheetMusic"/>
+			<xs:enumeration value="talkingBook"/>
+			<xs:enumeration value="video"/>
+			<xs:enumeration value="videoGame"/>
+			<xs:enumeration value="vinyl"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of mediaClassIconChoice type -->
+	<xs:simpleType name="messageSendMethod">
+		<xs:annotation>
+			<xs:documentation>choice of message send methods</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="arenaInbox"/>
+			<xs:enumeration value="email"/>
+			<xs:enumeration value="ilsDefined"/>
+			<xs:enumeration value="lmsMessage"/>
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="noReminder"/>
+			<xs:enumeration value="phone"/>
+			<xs:enumeration value="sms"/>
+			<xs:enumeration value="smsEmail"/>
+			<xs:enumeration value="smsSnailMail"/>
+			<xs:enumeration value="smsSnailMail2"/>
+			<xs:enumeration value="snailMail"/>
+			<xs:enumeration value="snailMail2"/>
+			<xs:enumeration value="voiceMessage"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of messageSendMethod type -->
+	<xs:simpleType name="messageServiceType">
+		<xs:annotation>
+			<xs:documentation>choice of message service types</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="dueDateAlert"/>
+			<xs:enumeration value="invoice"/>
+			<xs:enumeration value="invoiceReminder"/>
+			<xs:enumeration value="libraryMessage"/>
+			<xs:enumeration value="newStockAlert"/>
+			<xs:enumeration value="overdueNotice"/>
+			<xs:enumeration value="paymentReceipt"/>
+			<xs:enumeration value="pickUpNotice"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of messageServiceType type -->
+	<xs:simpleType name="paymentResult">
+		<xs:annotation>
+			<xs:documentation>payment transaction result status</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of paymentResult type -->
+	<xs:simpleType name="paymentTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of payment type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="cashRegisterPayment"/>
+			<xs:enumeration value="cashAutomatPayment"/>
+			<xs:enumeration value="cardOnlinePayment"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of paymentTypeChoice type -->
+	<xs:simpleType name="recordTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of record type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="archive"/>
+			<xs:enumeration value="catalogue"/>
+			<xs:enumeration value="museum"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of recordTypeChoice  type -->
+	<xs:simpleType name="reservationSource">
+		<xs:annotation>
+			<xs:documentation>choice of reservation source</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="catalogueRecordDetail"/>
+			<xs:enumeration value="holdings"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of reservationSource type -->
+	<xs:simpleType name="reservationStateType">
+		<xs:annotation>
+			<xs:documentation>choice of reservation state</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="active"/>
+			<xs:enumeration value="expired"/>
+			<xs:enumeration value="fetchable"/>
+			<xs:enumeration value="inTransit"/>
+			<xs:enumeration value="inactive"/>
+			<xs:enumeration value="loaned"/>
+			<xs:enumeration value="pickUpExpired"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of reservationStateType -->
+	<xs:simpleType name="reservationTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of reservation type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="normal"/>
+			<xs:enumeration value="regional"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of reservationTypeChoice type -->
+	<xs:simpleType name="resourceTypeChoice">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue resource type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="electronical"/>
+			<xs:enumeration value="electronic"/>
+			<xs:enumeration value="physical"/>
+			<!-- Note - the string 'electronical' is incorrect - the correct version 'electronic' has been added	and the 	-->
+			<!-- incorrect version has been retained  for backwards compatibility- it will be removed in a later 				-->
+			<!-- release 																																		-->
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of resourceTypeChoice  type -->
+	<xs:simpleType name="roleType">
+		<xs:annotation>
+			<xs:documentation>choice of author role type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="actor"/>
+			<xs:enumeration value="animator"/>
+			<xs:enumeration value="annotator"/>
+			<xs:enumeration value="architect"/>
+			<xs:enumeration value="arranger"/>
+			<xs:enumeration value="artist"/>
+			<xs:enumeration value="author"/>
+			<xs:enumeration value="cartographer"/>
+			<xs:enumeration value="choreographer"/>
+			<xs:enumeration value="cinematographer"/>
+			<xs:enumeration value="collaborator"/>
+			<xs:enumeration value="collector"/>
+			<xs:enumeration value="compiler"/>
+			<xs:enumeration value="composer"/>
+			<xs:enumeration value="conductor"/>
+			<xs:enumeration value="conservator"/>
+			<xs:enumeration value="contributor"/>
+			<xs:enumeration value="copyrightHolder"/>
+			<xs:enumeration value="costumeDesigner"/>
+			<xs:enumeration value="creator"/>
+			<xs:enumeration value="curator"/>
+			<xs:enumeration value="dancer"/>
+			<xs:enumeration value="designer"/>
+			<xs:enumeration value="director"/>
+			<xs:enumeration value="donor"/>
+			<xs:enumeration value="draftsman"/>
+			<xs:enumeration value="editor"/>
+			<xs:enumeration value="engineer"/>
+			<xs:enumeration value="engraver"/>
+			<xs:enumeration value="illustrator"/>
+			<xs:enumeration value="instrumentalist"/>
+			<xs:enumeration value="inventor"/>
+			<xs:enumeration value="librettist"/>
+			<xs:enumeration value="musicalDirector"/>
+			<xs:enumeration value="musician"/>
+			<xs:enumeration value="narrator"/>
+			<xs:enumeration value="originator"/>
+			<xs:enumeration value="owner"/>
+			<xs:enumeration value="patron"/>
+			<xs:enumeration value="performer"/>
+			<xs:enumeration value="photographer"/>
+			<xs:enumeration value="printer"/>
+			<xs:enumeration value="producer"/>
+			<xs:enumeration value="programmer"/>
+			<xs:enumeration value="repository"/>
+			<xs:enumeration value="sculptor"/>
+			<xs:enumeration value="sponsor"/>
+			<xs:enumeration value="stage"/>
+			<xs:enumeration value="technicalDirector"/>
+			<xs:enumeration value="transcriber"/>
+			<xs:enumeration value="translator"/>
+			<xs:enumeration value="vocalist"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of roleType type -->
+	<xs:simpleType name="simpleOptionType">
+		<xs:annotation>
+			<xs:documentation>choice between "yes'" and "no"</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="no"/>
+			<xs:enumeration value="yes"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of SimpleOptionType type -->
+	<xs:simpleType name="targetAudienceChoice">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue target audience code</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="a"/>
+			<xs:enumeration value="j"/>
+			<xs:enumeration value="y"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of targetAudienceChoice type -->
+	<xs:simpleType name="updateType">
+		<xs:annotation>
+			<xs:documentation>choice of catalogue update type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:Name">
+			<xs:enumeration value="add"/>
+			<xs:enumeration value="delete"/>
+			<xs:enumeration value="update"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- end of updateType type -->
+	<!-- DDElibra extensions begin -->
+	<xs:element name="addAbsentPeriod">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/absentPeriod/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="absentFromDate" use="required"/>
+			<xs:attribute name="absentToDate" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="addAbsentPeriodResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="absentPeriods"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="addFee">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/fee/add</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="optional"/>
+			<xs:attribute name="feeAmount" use="required"/>
+			<xs:attribute name="feeType" use="required"/>
+			<xs:attribute name="feeStatus" use="required"/>
+			<xs:attribute name="feeNote" use="optional"/>
+			<xs:attribute name="copyNumber" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="addFeeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="changeAbsentPeriod">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/absentPeriod/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="absentId" use="required"/>
+			<xs:attribute name="absentFromDate" use="required"/>
+			<xs:attribute name="absentToDate" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="changeAbsentPeriodResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="absentPeriods"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="changePatronPreferences">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/preferences/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="patronBranch" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="changePatronPreferencesResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="patronPreferences"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="changePinCode">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/pinCode/change</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="pinCodeChange" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="changePinCodeResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="detailCatalogueRecords">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="detailCatalogueRecord" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="getPatronInformationExtended">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/informationExtended</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="getPatronInformationExtendedResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="patronInformationExtended"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="removeAbsentPeriod">
+		<xs:annotation>
+			<xs:documentation>service url: alma/patron/absentPeriod/remove</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="arenaMemberAgencyCredentials" use="required"/>
+			<xs:attribute name="borrCard" use="required"/>
+			<xs:attribute name="pinCode" use="required"/>
+			<xs:attribute name="absentId" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="removeAbsentPeriodResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="status"/>
+				<xs:element ref="absentPeriods"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- internal types -->
+	<xs:element name="absentPeriod">
+		<xs:complexType>
+			<xs:attribute name="absentId" use="required"/>
+			<xs:attribute name="absentFromDate" use="required"/>
+			<xs:attribute name="absentToDate" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="absentPeriods">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="absentPeriod" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="patronPreferences">
+		<xs:complexType>
+			<xs:attribute name="patronBranch" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="patronBlock">
+		<xs:complexType>
+			<xs:attribute name="code" use="required"/>
+			<xs:attribute name="isSystemBlock" use="required" type="simpleOptionType"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="patronBlocks">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="patronBlock" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="patronInformationExtended">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="addresses" minOccurs="0"/>
+				<xs:element ref="borrCards" minOccurs="0"/>
+				<xs:element ref="emailAddresses" minOccurs="0"/>
+				<xs:element ref="messageServices" minOccurs="0"/>
+				<xs:element ref="phoneNumbers" minOccurs="0"/>
+				<xs:element ref="patronBlocks" minOccurs="0"/>  
+				<xs:element ref="absentPeriods" minOccurs="0"/>
+				<xs:element ref="patronPreferences" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="patronId" use="required"/>
+			<xs:attribute name="patronName" use="required"/>
+			<xs:attribute name="patronCategory" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<!-- DDElibra extensions end -->
+</xs:schema>

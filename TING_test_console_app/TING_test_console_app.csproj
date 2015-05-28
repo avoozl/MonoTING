@@ -9,6 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>TING_test_console_app</RootNamespace>
     <AssemblyName>TING_test_console_app</AssemblyName>
+    <ReleaseVersion>0.01</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
